@@ -1,0 +1,23 @@
+{
+  "package": "org.dimdev.jeid.mixin.core",
+  "required": true,
+  "refmap": "mixins.jeid.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.6",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinGameData",
+    "MixinStatList",
+    "MixinBlockStateContainer",
+    "MixinAnvilChunkLoader",
+    "MixinBlock",
+    "MixinChunk",
+    "MixinChunkGenerator",
+    "MixinSPacketChunkData",
+    "MixinGenLayerVoronoiZoom"
+  ],
+  "client": [],
+  "injectors": {
+    "maxShiftBy": 10
+  }
+}

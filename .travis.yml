@@ -1,0 +1,28 @@
+language: java
+jdk: oraclejdk8
+
+if: tag IS blank
+git:
+  depth: 5
+
+install: ./gradlew setupCIWorkspace
+script: ./gradlew clean build
+
+before_cache: find $HOME/.gradle/ -name '*.lock' -print -exec rm -f {} \;
+cache:
+  directories:
+  - $HOME/.gradle/caches/
+  - $HOME/.gradle/wrapper/
+
+before_deploy: export RELEASE_FILE_LIST=$(ls ./build/libs/* | tr '\n' ', ')
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: ArR73HRTML2+nfEHHcTc824vG3MBgtV2h/naMbpVbgrcD/aRaFvX5RU84BBS0A5KXRs+9/5gkNxffMSmiTD5HlorMh2Qb5eYNs8s43JJ7UlR0hKeVcZb8SbVMooPeNrFbYxQHMgz0VXHYZas4y2vFMd9vwgQOpTcRjnc6wyINkvsR1LtLs5D/w9bKNxz2iv2DNnGZhI/wPrPUkQXzypI6sSG6BbfyzWZ1Z3A2NU2qt6lO5U515/mCwEMVMKxC5BPK+0NCNOMc5oESc/Edmr2XtP2VRVsLI0ouRQniwr8uadoPGFZbj72o/8qGuGInSI0cApi48dS0bT0tUv8AIMseTwxsVNmSAi6PUZ5Mdsoz6yvsezwnD/tyQrCeY5yPZUwLUnwitnPbGcMbv88nioxrbd3nQWRqWNF9v9wdbJLNECfn1jK/iRpv/rw6MYntcMHgENziBM/xq4SQV5vlOsgjnihhGIJ8zQZQ5/RKVKoZj9sOunw7v+OZL6ZeMKIV2/lbwkjeIlTyY0IvZoydG8Lw5RVeMR+vdFULM1dJH1gKLTSl5iEmtX05iSR+LzmqCY+DfOCff7Iyoa+oIN46WuwzxCRz+V7IFUfz+6o4LOQ47vCN6LZvcSlh+qylI9n0YNHO/WMP/KJl9bhcVeCQoe0Zi+lAen9loZa8F2vFdc8DrY=
+  file_glob: true
+  file: "{$RELEASE_FILE_LIST}"
+  on:
+    repo: DimensionalDevelopment/JustEnoughIDs
+    branch: master
+    tags: false

@@ -1,0 +1,114 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "http://files.minecraftforge.net/maven" }
+        maven { url "http://repo.spongepowered.org/maven" }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
+    }
+}
+
+apply plugin: "java"
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: "org.spongepowered.mixin"
+
+repositories {
+    maven { url "http://repo.spongepowered.org/maven" }
+    ivy {
+        url "https://google.com/404"
+        ivyPattern("https://google.com/404") // Workaround for https://github.com/gradle/gradle/issues/4107
+        artifactPattern("https://media.forgecdn.net/files/[organisation]/[module]/[revision].[ext]")
+    }
+}
+
+dependencies {
+    implementation("org.spongepowered:mixin:0.7.8-SNAPSHOT") {
+        exclude module: "asm-commons"
+        exclude module: "asm-tree"
+        exclude module: "launchwrapper"
+        exclude module: "guava"
+        exclude module: "log4j-core"
+        exclude module: "gson"
+        exclude module: "commons-io"
+    }
+    compileOnly "2555:531:BiomesOPlenty-1.12.2-7.0.1.2384-universal@jar"
+}
+
+def travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
+def versionSuffix = travisBuildNumber != null ? travisBuildNumber : "SNAPSHOT"
+
+version "1.0.0-$versionSuffix"
+group "org.dimdev.jeid"
+archivesBaseName = "JustEnoughIDs"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+minecraft {
+    version "1.12.2-14.23.4.2703"
+    runDir "run"
+    mappings "snapshot_20180607"
+    makeObfSourceJar false
+
+    def args = [
+            "-Dfml.coreMods.load=org.dimdev.jeid.JEIDLoadingPlugin",
+            "-Dmixin.hotSwap=true",
+            "-Dmixin.checks.interfaces=true"
+    ]
+    clientJvmArgs.addAll(args)
+    serverJvmArgs.addAll(args)
+}
+
+mixin {
+    add sourceSets.main, "mixins.jeid.refmap.json"
+}
+
+reobf {
+    shadowJar {
+        mappingType = "SEARGE"
+    }
+}
+
+processResources {
+    filesMatching("mcmod.info") {
+        expand "version": project.version, "mcversion": project.minecraft.version
+    }
+
+    // Re-run this task when these change
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+}
+
+jar {
+    classifier "nolibs"
+    manifest.attributes(
+            "FMLCorePluginContainsFMLMod": "true",
+            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+            "FMLCorePlugin": "org.dimdev.jeid.JEIDLoadingPlugin",
+            "ForceLoadAsMod": "true"
+    )
+}
+
+shadowJar {
+    classifier ""
+    exclude "LICENSE.txt", "dummyThing"
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier "sources"
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+    archives shadowJar
+    archives sourcesJar
+}
+
+// These are broken
+runClient.group "other"
+runServer.group "other"

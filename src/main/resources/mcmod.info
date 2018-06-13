@@ -1,0 +1,20 @@
+{
+  "modListVersion": 2,
+  "modList": [
+    {
+      "modid": "jeid",
+      "name": "JustEnoughIDs",
+      "description": "Use the 1.13 chunk format in 1.12 to remove block, item, and biome ID limits.",
+      "version": "${version}",
+      "mcversion": "${mcversion}",
+      "url": "https://minecraft.curseforge.com/projects/jeid",
+      "authorList": [
+        "Runemoro"
+      ],
+      "logoFile": "/assets/jeid/logo.png",
+      "parent": "",
+      "screenshots": [],
+      "dependencies": []
+    }
+  ]
+}

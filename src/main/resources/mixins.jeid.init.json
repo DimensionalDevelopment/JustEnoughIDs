@@ -1,0 +1,15 @@
+{
+  "package": "org.dimdev.jeid.mixin.init",
+  "required": true,
+  "refmap": "mixins.jeid.refmap.json",
+  "target": "@env(INIT)",
+  "minVersion": "0.6",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [],
+  "client": [
+    "MixinLoader"
+  ],
+  "injectors": {
+    "maxShiftBy": 10
+  }
+}
