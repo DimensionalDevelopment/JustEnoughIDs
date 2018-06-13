@@ -1,7 +1,7 @@
 {
   "package": "org.dimdev.jeid.mixin.modsupport",
   "required": true,
-  "refmap": "mixins.jeid.refmap.json",
+  "refmap": "mixins.jeid.modsupport.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.6",
   "compatibilityLevel": "JAVA_8",

@@ -19,7 +19,7 @@ public class MixinModChunkGenerator {
     private Biome[] temporaryBiomes;
 
     /** @reason Return an empty biome byte array if the chunk is using an int biome array. **/
-    @Redirect(method = "generateChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;getBiomeArray()[B"))
+    @Redirect(method = "func_185932_a", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;getBiomeArray()[B"))
     private byte[] getBiomeArray(Chunk chunk) {
         INewChunk newChunk = (INewChunk) chunk;
         int[] intBiomeArray = newChunk.getIntBiomeArray();
@@ -30,7 +30,7 @@ public class MixinModChunkGenerator {
         return new byte[0];
     }
 
-    @Redirect(method = "generateChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/BiomeProvider;getBiomes([Lnet/minecraft/world/biome/Biome;IIII)[Lnet/minecraft/world/biome/Biome;"))
+    @Redirect(method = "func_185932_a", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/BiomeProvider;getBiomes([Lnet/minecraft/world/biome/Biome;IIII)[Lnet/minecraft/world/biome/Biome;"))
     private Biome[] getBiomes(BiomeProvider biomeProvider, Biome[] oldBiomeList, int x, int z, int width, int depth) {
         temporaryBiomes = biomeProvider.getBiomes(oldBiomeList, x, z, width, depth);
         return temporaryBiomes;
