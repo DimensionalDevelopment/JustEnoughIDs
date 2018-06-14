@@ -12,10 +12,10 @@
     "MixinAnvilChunkLoader",
     "MixinBlock",
     "MixinChunk",
-    "MixinChunkGenerator",
     "MixinSPacketChunkData",
     "MixinGenLayerVoronoiZoom",
-    "MixinChunkPrimer"
+    "MixinChunkPrimer",
+    "MixinChunkProviderServer"
   ],
   "client": [],
   "injectors": {

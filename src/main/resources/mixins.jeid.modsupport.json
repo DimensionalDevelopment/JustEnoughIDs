@@ -8,7 +8,6 @@
   "mixins": [],
   "client": [
     "MixinModBiomes",
-    "MixinModChunkGenerator",
     "MixinBOPCommand"
   ],
   "injectors": {

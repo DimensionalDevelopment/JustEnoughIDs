@@ -7,12 +7,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeVoid;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
-
-import java.io.File;
 
 @Mod(modid = "jeid",
      name = "JustEnoughIDs",
@@ -20,13 +19,12 @@ import java.io.File;
 public class JEID {
     private static final boolean DEBUG_BLOCK_IDS = false;
     private static final boolean DEBUG_ITEM_IDS = false;
-    private static final boolean DEBUG_BIOME_IDS = true;
+    private static final boolean DEBUG_BIOME_IDS = false;
+    public static final Biome errorBiome = new BiomeVoid(new Biome.BiomeProperties("A mod doesn't support extended biome IDs -- report to JEID"))
+            .setRegistryName("jeid:error_biome");
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-        File modDir = new File(event.getModConfigurationDirectory(), "jeid");
-        modDir.mkdirs();
-
         if (DEBUG_BLOCK_IDS) {
             IForgeRegistry<Block> blockRegistry = GameRegistry.findRegistry(Block.class);
             IForgeRegistry<Item> itemRegistry = GameRegistry.findRegistry(Item.class);
@@ -62,5 +60,7 @@ public class JEID {
                 biomeRegistry.register(biome);
             }
         }
+
+        GameRegistry.findRegistry(Biome.class).register(errorBiome);
     }
 }
