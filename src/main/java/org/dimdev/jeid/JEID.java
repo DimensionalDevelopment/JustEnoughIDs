@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.dimdev.jeid.network.MessageManager;
 
 @Mod(modid = "jeid",
      name = "JustEnoughIDs",
@@ -25,6 +26,10 @@ public class JEID {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
+        // Register messages
+        MessageManager.init();
+
+        // Debug code
         if (DEBUG_BLOCK_IDS) {
             IForgeRegistry<Block> blockRegistry = GameRegistry.findRegistry(Block.class);
             IForgeRegistry<Item> itemRegistry = GameRegistry.findRegistry(Item.class);

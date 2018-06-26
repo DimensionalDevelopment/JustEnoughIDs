@@ -8,7 +8,10 @@
   "mixins": [],
   "client": [
     "MixinModBiomes",
-    "MixinBOPCommand"
+    "MixinBOPCommand",
+    "MixinBlockTFMagicLogSpecial",
+    "MixinUtils",
+    "MixinCleansingRitualMessage"
   ],
   "injectors": {
     "maxShiftBy": 10

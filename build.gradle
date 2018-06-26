@@ -36,6 +36,9 @@ dependencies {
         exclude module: "commons-io"
     }
     compileOnly "2555:531:BiomesOPlenty-1.12.2-7.0.1.2384-universal@jar"
+    compileOnly "2561:393:twilightforest-1.12.2-3.7.424-universal@jar"
+    compileOnly "2569:273:Thaumcraft-1.12.2-6.1.BETA16@jar"
+    compileOnly "2572:684:AbyssalCraft-1.12.2-1.9.4.10@jar"
 }
 
 def travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
