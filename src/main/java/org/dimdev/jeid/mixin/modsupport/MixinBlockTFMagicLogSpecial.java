@@ -16,7 +16,7 @@ import twilightforest.block.BlockTFMagicLogSpecial;
 @Pseudo
 @Mixin(BlockTFMagicLogSpecial.class)
 public class MixinBlockTFMagicLogSpecial {
-    @Overwrite
+    @Overwrite(remap = false)
     private void sendChangedBiome(World world, BlockPos pos) {
         IMessage message = new BiomeChangeMessage(pos.getX(), pos.getZ(), Biome.getIdForBiome(TFBiomes.enchantedForest));
         MessageManager.CHANNEL.sendToAllAround(message, new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), 128.0D, pos.getZ(), 128.0D));

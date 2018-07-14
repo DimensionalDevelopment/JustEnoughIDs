@@ -17,7 +17,7 @@ public class MixinCleansingRitualMessage {
     @Shadow private int z;
     @Shadow private int biomeID;
 
-    @Overwrite
+    @Overwrite(remap = false)
     public void process(EntityPlayer player, Side side) {
         Chunk chunk = player.world.getChunkFromBlockCoords(new BlockPos(x, 0, z));
         int chunkX = x & 0xF;
