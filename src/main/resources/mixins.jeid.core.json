@@ -15,7 +15,8 @@
     "MixinSPacketChunkData",
     "MixinGenLayerVoronoiZoom",
     "MixinChunkPrimer",
-    "MixinChunkProviderServer"
+    "MixinChunkProviderServer",
+    "MixinRenderGlobal"
   ],
   "client": [
     "client.MixinChunk"
