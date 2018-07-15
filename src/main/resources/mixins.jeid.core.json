@@ -15,11 +15,11 @@
     "MixinSPacketChunkData",
     "MixinGenLayerVoronoiZoom",
     "MixinChunkPrimer",
-    "MixinChunkProviderServer",
-    "MixinRenderGlobal"
+    "MixinChunkProviderServer"
   ],
   "client": [
-    "client.MixinChunk"
+    "client.MixinChunk",
+    "client.MixinRenderGlobal"
   ],
   "injectors": {
     "maxShiftBy": 10

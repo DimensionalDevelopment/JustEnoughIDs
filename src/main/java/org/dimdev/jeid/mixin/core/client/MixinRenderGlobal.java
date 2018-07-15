@@ -1,4 +1,4 @@
-package org.dimdev.jeid.mixin.core;
+package org.dimdev.jeid.mixin.core.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;

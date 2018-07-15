@@ -11,7 +11,13 @@
     "MixinBOPCommand",
     "MixinBlockTFMagicLogSpecial",
     "MixinUtils",
-    "MixinCleansingRitualMessage"
+    "MixinCleansingRitualMessage",
+    "MixinEntityPortal",
+    "MixinDimensionManager",
+    "MixinBiomeReplacer",
+    "MixinBiomeHandler",
+    "MixinBaseBlock",
+    "MixinChunkMD"
   ],
   "injectors": {
     "maxShiftBy": 10
