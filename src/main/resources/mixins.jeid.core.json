@@ -16,12 +16,12 @@
     "MixinGenLayerVoronoiZoom",
     "MixinChunkPrimer",
     "MixinChunkProviderServer",
-    "MixinWorldInfo",
-    "MixinWorldSummary"
+    "MixinWorldInfo"
   ],
   "client": [
     "client.MixinChunk",
-    "client.MixinRenderGlobal"
+    "client.MixinRenderGlobal",
+    "client.MixinWorldSummary"
   ],
   "injectors": {
     "maxShiftBy": 10

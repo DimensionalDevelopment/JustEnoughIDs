@@ -1,4 +1,4 @@
-package org.dimdev.jeid.mixin.core;
+package org.dimdev.jeid.mixin.core.client;
 
 import net.minecraft.world.storage.WorldSummary;
 import org.spongepowered.asm.mixin.Final;

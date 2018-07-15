@@ -2,9 +2,9 @@ package org.dimdev.jeid.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -44,7 +44,7 @@ public class BiomeChangeMessage implements IMessage {
         @Override
         public IMessage onMessage(BiomeChangeMessage message, MessageContext ctx) {
             Minecraft.getMinecraft().addScheduledTask(() -> {
-                World world = Minecraft.getMinecraft().world;
+                WorldClient world = Minecraft.getMinecraft().world;
                 Chunk chunk = world.getChunkFromBlockCoords(new BlockPos(message.x, 0, message.z));
                 ((INewChunk) chunk).getIntBiomeArray()[(message.x & 15) << 4 | message.z & 15] = message.biomeId;
                 world.markBlockRangeForRenderUpdate(new BlockPos(message.x, 0, message.z), new BlockPos(message.x, 0, message.z));
