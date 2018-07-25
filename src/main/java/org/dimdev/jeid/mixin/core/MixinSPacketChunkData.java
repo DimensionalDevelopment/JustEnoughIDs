@@ -29,9 +29,25 @@ public abstract class MixinSPacketChunkData {
         return false;
     }
 
-    @Redirect(method = "calculateChunkSize", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;getBiomeArray()[B"))
-    private byte[] getBiomeArray(Chunk chunk) {
-        INewChunk newChunk = (INewChunk) chunk;
-        return new byte[newChunk.getIntBiomeArray().length * 4];
+    @Inject(method = "calculateChunkSize", at = @At(value = "RETURN"), cancellable = true)
+    public void onReturn(Chunk chunkIn, boolean p_189556_2_, int p_189556_3_, CallbackInfoReturnable<Integer> ci) {
+        if (this.isFullChunk()) {
+            int size = ci.getReturnValue();
+
+            // First, we subtract off the length added by Vanilla (the line 'i += chunkIn.getBiomeArray().length;')
+            size -= chunkIn.getBiomeArray().length;
+
+            // Now, we add on the actual length of the VarIntArray we're going to be writing in extractChunkData
+            size += this.getVarIntArraySize(((INewChunk) chunkIn).getIntBiomeArray());
+            ci.setReturnValue(size);
+        }
+    }
+
+    private int getVarIntArraySize(int[] array) {
+        int size = PacketBuffer.getVarIntSize(array.length);
+        for (int i: array) {
+            size += PacketBuffer.getVarIntSize(i);
+        }
+        return size;
     }
 }
