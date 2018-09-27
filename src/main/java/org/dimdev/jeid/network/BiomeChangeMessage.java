@@ -45,7 +45,7 @@ public class BiomeChangeMessage implements IMessage {
         public IMessage onMessage(BiomeChangeMessage message, MessageContext ctx) {
             Minecraft.getMinecraft().addScheduledTask(() -> {
                 WorldClient world = Minecraft.getMinecraft().world;
-                Chunk chunk = world.getChunkFromBlockCoords(new BlockPos(message.x, 0, message.z));
+                Chunk chunk = world.getChunk(new BlockPos(message.x, 0, message.z));
                 ((INewChunk) chunk).getIntBiomeArray()[(message.x & 15) << 4 | message.z & 15] = message.biomeId;
                 world.markBlockRangeForRenderUpdate(new BlockPos(message.x, 0, message.z), new BlockPos(message.x, 0, message.z));
             });

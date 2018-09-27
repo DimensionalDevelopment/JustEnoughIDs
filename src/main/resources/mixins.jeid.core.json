@@ -16,12 +16,16 @@
     "MixinGenLayerVoronoiZoom",
     "MixinChunkPrimer",
     "MixinChunkProviderServer",
-    "MixinWorldInfo"
+    "MixinWorldInfo",
+    "MixinPotionEffect",
+    "MixinSPacketEntityEffect",
+    "MixinSPacketRemoveEntityEffect"
   ],
   "client": [
     "client.MixinChunk",
     "client.MixinRenderGlobal",
-    "client.MixinWorldSummary"
+    "client.MixinWorldSummary",
+    "client.MixinNetHandlerPlayClient"
   ],
   "injectors": {
     "maxShiftBy": 10

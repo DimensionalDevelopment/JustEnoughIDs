@@ -40,7 +40,7 @@ public class BiomeArrayMessage implements IMessage {
     public static class Handler implements IMessageHandler<BiomeArrayMessage, IMessage> {
         @Override
         public IMessage onMessage(BiomeArrayMessage message, MessageContext ctx) {
-            Chunk chunk = ctx.getServerHandler().player.world.getChunkFromChunkCoords(message.chunkX, message.chunkZ);
+            Chunk chunk = ctx.getServerHandler().player.world.getChunk(message.chunkX, message.chunkZ);
             ((INewChunk) chunk).setIntBiomeArray(message.biomeArray);
             return null;
         }

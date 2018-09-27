@@ -19,7 +19,7 @@ public class MixinUtils {
     public static void setBiomeAt(World world, BlockPos pos, Biome biome, boolean sync) {
         if (biome == null) return;
 
-        INewChunk newChunk = (INewChunk) world.getChunkFromBlockCoords(pos);
+        INewChunk newChunk = (INewChunk) world.getChunk(pos);
         int[] array = newChunk.getIntBiomeArray();
         array[(pos.getX() & 15) << 4 | pos.getZ() & 15] = Biome.getIdForBiome(biome) & 255;
         newChunk.setIntBiomeArray(array);

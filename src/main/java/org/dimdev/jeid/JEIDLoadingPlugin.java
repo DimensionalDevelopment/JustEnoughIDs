@@ -10,7 +10,7 @@ import java.util.Map;
 
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 @IFMLLoadingPlugin.SortingIndex(-7500)
-@IFMLLoadingPlugin.TransformerExclusions("org.dimdev.jeid.")
+//@IFMLLoadingPlugin.TransformerExclusions("org.dimdev.jeid.")
 public class JEIDLoadingPlugin implements IFMLLoadingPlugin {
 
     public JEIDLoadingPlugin() {
