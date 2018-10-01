@@ -17,9 +17,7 @@
     "MixinChunkPrimer",
     "MixinChunkProviderServer",
     "MixinWorldInfo",
-    "MixinPotionEffect",
-    "MixinSPacketEntityEffect",
-    "MixinSPacketRemoveEntityEffect"
+    "MixinPotionEffect"
   ],
   "client": [
     "client.MixinChunk",
