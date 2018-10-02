@@ -26,7 +26,7 @@ public class JEID {
     private static final boolean DEBUG_BLOCK_IDS = false;
     private static final boolean DEBUG_ITEM_IDS = false;
     private static final boolean DEBUG_BIOME_IDS = false;
-    private static final boolean DEBUG_POTION_IDS = true;
+    private static final boolean DEBUG_POTION_IDS = false;
     public static final Biome errorBiome = new BiomeVoid(new Biome.BiomeProperties("A mod doesn't support extended biome IDs -- report to JEID"))
             .setRegistryName("jeid:error_biome");
 
