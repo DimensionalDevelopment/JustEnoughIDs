@@ -18,7 +18,7 @@ import zmaster587.advancedRocketry.util.BiomeHandler;
 public class MixinBiomeHandler {
     @Overwrite(remap = false)
     public static void changeBiome(World world, int biomeId, BlockPos pos) {
-        changeBiome(world, biomeId, world.getChunkFromBlockCoords(pos), pos);
+        changeBiome(world, biomeId, world.getChunk(pos), pos);
     }
 
     @Overwrite(remap = false)

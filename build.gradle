@@ -18,6 +18,7 @@ apply plugin: "org.spongepowered.mixin"
 
 repositories {
     maven { url "http://repo.spongepowered.org/maven" }
+    maven { url "http://www.dimdev.org/maven" }
     ivy {
         url "https://google.com/404"
         ivyPattern("https://google.com/404") // Workaround for https://github.com/gradle/gradle/issues/4107
@@ -26,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.spongepowered:mixin:0.7.8-SNAPSHOT") {
+    implementation("org.dimdev:mixin:0.7.11-SNAPSHOT") {
         exclude module: "asm-commons"
         exclude module: "asm-tree"
         exclude module: "launchwrapper"
@@ -60,7 +61,7 @@ targetCompatibility = 1.8
 minecraft {
     version "1.12.2-14.23.4.2703"
     runDir "run"
-    mappings "snapshot_20180607"
+    mappings "stable_39"
     makeObfSourceJar false
 
     def args = [

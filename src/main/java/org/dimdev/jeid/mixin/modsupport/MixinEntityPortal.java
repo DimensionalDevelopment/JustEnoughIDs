@@ -19,7 +19,7 @@ public class MixinEntityPortal {
     @Overwrite(remap = false)
     public static void corruptBiome(World world, BlockPos pos) {
         if (world.isBlockLoaded(pos)) {
-            Chunk chunk = world.getChunkFromBlockCoords(pos);
+            Chunk chunk = world.getChunk(pos);
             ((INewChunk) chunk).getIntBiomeArray()[(pos.getZ() & 15) << 4 | pos.getX() & 15] = Biome.getIdForBiome(toBiome);
         }
     }

@@ -19,7 +19,7 @@ public class MixinCleansingRitualMessage {
 
     @Overwrite(remap = false)
     public void process(EntityPlayer player, Side side) {
-        Chunk chunk = player.world.getChunkFromBlockCoords(new BlockPos(x, 0, z));
+        Chunk chunk = player.world.getChunk(new BlockPos(x, 0, z));
         int chunkX = x & 0xF;
         int chunkZ = z & 0xF;
         ((INewChunk) chunk).getIntBiomeArray()[chunkZ << 4 | chunkX ] = biomeID;
