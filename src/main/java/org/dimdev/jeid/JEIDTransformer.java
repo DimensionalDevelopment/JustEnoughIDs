@@ -4,6 +4,8 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.RegistryNamespaced;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -15,21 +17,31 @@ import java.util.function.Predicate;
 
 /**
  * This class was borrowed from Zabi94's MaxPotionIDExtender
- * until we can figure out the issue with two of our Mixin
- * classes with mappings. All credit in this class goes to Zabi
- * and his incredible work on figuring out how to make this work.
+ * under MIT License and with full help of Zabi. All credit in this class goes to Zabi
+ * and his incredible work on figuring out how to make this work and helping out.
  *
  * https://github.com/zabi94/MaxPotionIDExtender
  */
-public class PotionTransformer implements IClassTransformer {
+public class JEIDTransformer implements IClassTransformer {
+
+    public static RegistryNamespaced<ResourceLocation, Potion> REGISTRY;
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
+        if (transformedName.equals("net.minecraft.client.network.NetHandlerPlayClient")) {
+            return transformNetHandlerPlayClient(basicClass);
+        }
+        if (transformedName.equals("net.minecraft.potion.PotionEffect")) {
+            return transformPotionEffect(basicClass);
+        }
         if (transformedName.equals("net.minecraft.network.play.server.SPacketEntityEffect")) {
             return transformSPacketEntityEffect(basicClass);
         }
         if (transformedName.equals("net.minecraft.network.play.server.SPacketRemoveEntityEffect")) {
             return transformSPacketRemoveEntityEffect(basicClass);
+        }
+        if (transformedName.equals("net.minecraft.item.ItemStack")) {
+            return transformItemStack(basicClass);
         }
         if (transformedName.equals("net.minecraft.nbt.NBTTagCompound")) {
             ClassReader cr = new ClassReader(basicClass);
@@ -66,13 +78,29 @@ public class PotionTransformer implements IClassTransformer {
             }
         }
         if (target==null) {
-            //throw new ASMException("Can't locate target instruction in "+mn.name, mn);
+            throw new RuntimeException("Can't locate target instruction in "+mn.name);
         }
         return target;
     }
+    private byte[] transformItemStack(byte[] basicClass) {
+        ClassReader cr = new ClassReader(basicClass);
+        ClassNode cn = new ClassNode();
+        cr.accept(cn, 0);
+
+        String descr = "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/client/util/ITooltipFlag;)Ljava/util/List;";
+        String getIntegerName = Obf.isDeobf()?"getInteger":"func_74762_e";
+
+        MethodNode mn = locateMethod(cn, descr, "func_82840_a", "getTooltip");
+        AbstractInsnNode target = locateTargetInsn(mn, n -> n.getOpcode()==Opcodes.INVOKEVIRTUAL && n.getPrevious().getOpcode()==Opcodes.LDC && ((LdcInsnNode)n.getPrevious()).cst.toString().equals("id"));
+        mn.instructions.insertBefore(target, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, Obf.NBTTagCompound, getIntegerName, "(Ljava/lang/String;)I", false));
+        mn.instructions.remove(target);
+
+        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        cn.accept(cw);
+        return cw.toByteArray();
+    }
 
     private byte[] transformSPacketRemoveEntityEffect(byte[] basicClass) {
-        //Log.i("Patching SPacketRemoveEntityEffect");
         ClassReader cr = new ClassReader(basicClass);
         ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
@@ -89,12 +117,10 @@ public class PotionTransformer implements IClassTransformer {
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         cn.accept(cw);
-        //Log.i("Patch Successful");
         return cw.toByteArray();
     }
 
     private byte[] transformSPacketEntityEffect(byte[] basicClass) {
-        //Log.i("Patching SPacketEntityEffect");
         ClassReader cr = new ClassReader(basicClass);
         ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
@@ -122,7 +148,7 @@ public class PotionTransformer implements IClassTransformer {
         }
 
         if (targetNode == null) {
-            //throw new ASMException("Can't find target node for SPacketEntityEffect constructor");
+            throw new RuntimeException("Can't find target node for SPacketEntityEffect constructor");
         }
 
         //These are reversed, they get pushed down the stack
@@ -161,14 +187,59 @@ public class PotionTransformer implements IClassTransformer {
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         cn.accept(cw);
-        //Log.i("Patch Successful");
         return cw.toByteArray();
     }
 
-    public int getIdFromPotEffect(PotionEffect pe) {
-        return Potion.getIdFromPotion(pe.getPotion());
+    private byte[] transformPotionEffect(byte[] basicClass) {
+        ClassReader cr = new ClassReader(basicClass);
+        ClassNode cn = new ClassNode();
+        cr.accept(cn, 0);
+
+        if (!cn.name.equals(Obf.PotionEffect)) {
+            throw new RuntimeException("Mapping mismatch! PotionEffect is "+cn.name+", not "+Obf.PotionEffect);
+        }
+
+        MethodNode mn = locateMethod(cn, "(L"+Obf.NBTTagCompound+";)L"+Obf.NBTTagCompound+";", "writeCustomPotionEffectToNBT", "a");
+        AbstractInsnNode ant = locateTargetInsn(mn, n -> n.getOpcode() == Opcodes.I2B);
+        String mname = (Obf.isDeobf()?"setInteger":"a");
+        MethodInsnNode call = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, Obf.NBTTagCompound, mname, "(Ljava/lang/String;I)V", false);
+        mn.instructions.remove(ant.getNext());
+        mn.instructions.insert(ant, call);
+        mn.instructions.remove(ant);
+
+
+        MethodNode mn2 = locateMethod(cn, "(L"+Obf.NBTTagCompound+";)L"+Obf.PotionEffect+";", "readCustomPotionEffectFromNBT", "b");
+        AbstractInsnNode ant2 = locateTargetInsn(mn2, n -> n.getOpcode() == Opcodes.INVOKEVIRTUAL);
+
+        String name2 = (Obf.isDeobf()?"getInteger":"h");
+
+        mn2.instructions.remove(ant2.getNext());
+        mn2.instructions.remove(ant2.getNext());
+        mn2.instructions.insert(ant2, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, Obf.NBTTagCompound, name2, "(Ljava/lang/String;)I", false));
+        mn2.instructions.remove(ant2);
+
+        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        cn.accept(cw);
+        return cw.toByteArray();
     }
 
+    private byte[] transformNetHandlerPlayClient(byte[] basicClass) {
+        ClassReader cr = new ClassReader(basicClass);
+        ClassNode cn = new ClassNode();
+        cr.accept(cn, 0);
+
+        MethodNode mn = locateMethod(cn, "(L"+Obf.SPacketEntityEffect+";)V", "handleEntityEffect", "a");
+        AbstractInsnNode target = locateTargetInsn(mn, n -> n.getOpcode()==Opcodes.SIPUSH);
+        mn.instructions.remove(target.getPrevious());
+        mn.instructions.remove(target.getNext());
+        mn.instructions.insertBefore(target, new FieldInsnNode(Opcodes.GETFIELD, Obf.SPacketEntityEffect, "effectInt", "I"));
+        mn.instructions.remove(target);
+        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        cn.accept(cw);
+        return cw.toByteArray();
+    }
+
+    public static int getIdFromPotEffect(PotionEffect pe) { return REGISTRY.getIDForObject(pe.getPotion()); }
 }
 
 class Obf {

@@ -33,4 +33,8 @@ public abstract class MixinGameData {
     /** @reason Removes the biome ID limit. */
     @ModifyConstant(method = "init", constant = @Constant(intValue = 255, ordinal = 1), remap = false)
     private static int getBiomeIDLimit(int value) { return Integer.MAX_VALUE - 1; }
+
+    /** @reason Removes the enchantment ID limit. */
+    @ModifyConstant(method = "init", constant = @Constant(intValue = Short.MAX_VALUE - 1, ordinal = 0), remap = false)
+    private static int getEnchantmentIDLimit(int value) { return Integer.MAX_VALUE - 1; }
 }

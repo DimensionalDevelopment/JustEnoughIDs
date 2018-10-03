@@ -99,7 +99,8 @@ jar {
             "FMLCorePluginContainsFMLMod": "true",
             "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
             "FMLCorePlugin": "org.dimdev.jeid.JEIDLoadingPlugin",
-            "ForceLoadAsMod": "true"
+            "ForceLoadAsMod": "true",
+            "FMLAT": "jeid_at.cfg"
     )
 }
 

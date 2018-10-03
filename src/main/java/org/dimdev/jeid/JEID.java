@@ -3,6 +3,9 @@ package org.dimdev.jeid;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.potion.Potion;
@@ -12,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeVoid;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -27,6 +31,7 @@ public class JEID {
     private static final boolean DEBUG_ITEM_IDS = false;
     private static final boolean DEBUG_BIOME_IDS = false;
     private static final boolean DEBUG_POTION_IDS = false;
+    private static final boolean DEBUG_ENCHANT_IDS = false;
     public static final Biome errorBiome = new BiomeVoid(new Biome.BiomeProperties("A mod doesn't support extended biome IDs -- report to JEID"))
             .setRegistryName("jeid:error_biome");
 
@@ -34,6 +39,9 @@ public class JEID {
     public void onPreInit(FMLPreInitializationEvent event) {
         // Register messages
         MessageManager.init();
+
+        // Error Biome Registration
+        GameRegistry.findRegistry(Biome.class).register(errorBiome);
 
         // Debug code
         if (DEBUG_BLOCK_IDS) {
@@ -72,8 +80,6 @@ public class JEID {
             }
         }
 
-        GameRegistry.findRegistry(Biome.class).register(errorBiome);
-
         if (DEBUG_POTION_IDS) {
             IForgeRegistry<Potion> potionRegistry = GameRegistry.findRegistry(Potion.class);
             IForgeRegistry<PotionType> potionTypeRegistry = GameRegistry.findRegistry(PotionType.class);
@@ -83,11 +89,29 @@ public class JEID {
             }
 
             for (int i = 0; i < 300; i++) {
-                PotionType pt = new PotionType(new PotionEffect(Potion.REGISTRY.getObject(new ResourceLocation("jeid:potion_" + i)), 2000, 0, false, true));
+                PotionType pt = new PotionType(new PotionEffect(Potion.REGISTRY.getObject(new ResourceLocation("jeid:potion_" + i)),
+                                        2000,
+                                        0,
+                                        false,
+                                    true));
                 pt.setRegistryName(new ResourceLocation("jeid:potiontype_"+i));
                 potionTypeRegistry.register(pt);
             }
         }
+
+        if (DEBUG_ENCHANT_IDS) {
+            IForgeRegistry<Enchantment> enchantRegistry = GameRegistry.findRegistry(Enchantment.class);
+            for (int i = 0; i < Short.MAX_VALUE; i++) {
+                Enchantment ench = new EnchantTest(i).setRegistryName(new ResourceLocation("jeid:enchant_"+i));
+
+                enchantRegistry.register(ench);
+            }
+        }
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent e) {
+        JEIDTransformer.REGISTRY = net.minecraftforge.registries.GameData.getWrapper(Potion.class);
     }
 
     public static class PotionTest extends Potion {
@@ -104,5 +128,15 @@ public class JEID {
         public String getName() {
             return nm;
         }
+    }
+
+    public static class EnchantTest extends Enchantment {
+
+        public EnchantTest(int i)
+        {
+            super(Rarity.COMMON, EnumEnchantmentType.BOW, new EntityEquipmentSlot[EntityEquipmentSlot.CHEST.getIndex()]);
+            this.setName("Test Enchantment #"+i);
+        }
+
     }
 }

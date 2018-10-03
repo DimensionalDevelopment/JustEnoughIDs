@@ -4,12 +4,13 @@
     {
       "modid": "jeid",
       "name": "JustEnoughIDs",
-      "description": "Use the 1.13 chunk format in 1.12 to remove block, item, and biome ID limits.",
+      "description": "Use the 1.13 chunk format in 1.12 to remove block, item, and biome ID limits.\n\nThanks to zabi94 for helping getting potions and enchants extended.",
       "version": "${version}",
       "mcversion": "${mcversion}",
       "url": "https://minecraft.curseforge.com/projects/jeid",
       "authorList": [
-        "Runemoro"
+        "Runemoro",
+        "ZombieHDGaming"
       ],
       "logoFile": "/assets/jeid/logo.png",
       "parent": "",

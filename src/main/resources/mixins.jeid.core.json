@@ -17,13 +17,14 @@
     "MixinChunkPrimer",
     "MixinChunkProviderServer",
     "MixinWorldInfo",
-    "MixinPotionEffect"
+    "MixinItemStack",
+    "MixinEnchantmentHelper",
+    "MixinItemEnchantedBook"
   ],
   "client": [
     "client.MixinChunk",
     "client.MixinRenderGlobal",
-    "client.MixinWorldSummary",
-    "client.MixinNetHandlerPlayClient"
+    "client.MixinWorldSummary"
   ],
   "injectors": {
     "maxShiftBy": 10

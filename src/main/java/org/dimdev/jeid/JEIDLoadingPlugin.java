@@ -19,7 +19,7 @@ public class JEIDLoadingPlugin implements IFMLLoadingPlugin {
         Mixins.addConfiguration("mixins.jeid.init.json");
     }
 
-    @Override public String[] getASMTransformerClass() { Obf.loadData(); return new String[]{ "org.dimdev.jeid.PotionTransformer" }; }
+    @Override public String[] getASMTransformerClass() { Obf.loadData(); return new String[]{ "org.dimdev.jeid.JEIDTransformer" }; }
     @Override public String getModContainerClass() { return null; }
     @Nullable @Override public String getSetupClass() { return null; }
     @Override public void injectData(Map<String, Object> data) {}
