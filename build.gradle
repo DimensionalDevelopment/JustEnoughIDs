@@ -51,7 +51,7 @@ dependencies {
 def travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
 def versionSuffix = travisBuildNumber != null ? travisBuildNumber : "SNAPSHOT"
 
-version "1.0.1-$versionSuffix"
+version "1.0.2-$versionSuffix"
 group "org.dimdev.jeid"
 archivesBaseName = "JustEnoughIDs"
 
