@@ -17,7 +17,6 @@
     "MixinChunkPrimer",
     "MixinChunkProviderServer",
     "MixinWorldInfo",
-    "MixinItemStack",
     "MixinEnchantmentHelper",
     "MixinItemEnchantedBook"
   ],

@@ -48,7 +48,7 @@ public class JEIDTransformer implements IClassTransformer {
             ClassNode cn = new ClassNode();
             cr.accept(cn, 0);
             if (!cn.name.equals(Obf.NBTTagCompound)) {
-                throw new RuntimeException("The class NBTTagCompound has broken mappings, should be "+cn.name);
+                throw new ASMException("The class NBTTagCompound has broken mappings, should be "+cn.name);
             }
         }
         if (transformedName.equals("net.minecraft.network.PacketBuffer")) {
@@ -56,16 +56,34 @@ public class JEIDTransformer implements IClassTransformer {
             ClassNode cn = new ClassNode();
             cr.accept(cn, 0);
             if (!cn.name.equals(Obf.PacketBuffer)) {
-                throw new RuntimeException("The class PacketBuffer has broken mappings, should be "+cn.name);
+                throw new ASMException("The class PacketBuffer has broken mappings, should be "+cn.name);
             }
         }
         return basicClass;
     }
 
-    private static MethodNode locateMethod(ClassNode cn, String desc, String nameIn, String deobfNameIn) {
+    private static MethodNode locateMethod(ClassNode cn, String desc, String... namesIn) {
         return cn.methods.parallelStream()
-                .filter(n -> n.desc.equals(desc) && (n.name.equals(nameIn) || n.name.equals(deobfNameIn)))
-                .findAny().orElseThrow(() -> new RuntimeException((nameIn +" ("+deobfNameIn+"): "+desc+" cannot be found in "+cn.name)));
+                .filter(n -> n.desc.equals(desc) && anyMatch(namesIn, n.name))
+                .findAny().orElseThrow(() -> new ASMException(getNames(namesIn) +": "+desc+" cannot be found in "+cn.name, cn));
+    }
+
+    private static boolean anyMatch(String[] pool, String match) {
+        for (String s:pool) {
+            if (s.equals(match)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String getNames(String[] pool) {
+        StringBuilder sb = new StringBuilder();
+        for (String s:pool) {
+            sb.append(s);
+            sb.append(" ");
+        }
+        return sb.toString().trim();
     }
 
     private static AbstractInsnNode locateTargetInsn(MethodNode mn, Predicate<AbstractInsnNode> filter) {
@@ -78,22 +96,38 @@ public class JEIDTransformer implements IClassTransformer {
             }
         }
         if (target==null) {
-            throw new RuntimeException("Can't locate target instruction in "+mn.name);
+            throw new ASMException("Can't locate target instruction in "+mn.name, mn);
         }
         return target;
     }
+
     private byte[] transformItemStack(byte[] basicClass) {
         ClassReader cr = new ClassReader(basicClass);
         ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
 
-        String descr = "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/client/util/ITooltipFlag;)Ljava/util/List;";
+        if (!cn.name.equals(Obf.ItemStack)) {
+            throw new ASMException("The class ItemStack has broken mappings, should be "+cn.name);
+        }
+
+        String descr = "(L"+Obf.EntityPlayer+";L"+Obf.ITooltipFlag+";)Ljava/util/List;";
         String getIntegerName = Obf.isDeobf()?"getInteger":"func_74762_e";
 
-        MethodNode mn = locateMethod(cn, descr, "func_82840_a", "getTooltip");
+        MethodNode mn = locateMethod(cn, descr, "func_82840_a", "getTooltip", "a");
         AbstractInsnNode target = locateTargetInsn(mn, n -> n.getOpcode()==Opcodes.INVOKEVIRTUAL && n.getPrevious().getOpcode()==Opcodes.LDC && ((LdcInsnNode)n.getPrevious()).cst.toString().equals("id"));
         mn.instructions.insertBefore(target, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, Obf.NBTTagCompound, getIntegerName, "(Ljava/lang/String;)I", false));
         mn.instructions.remove(target);
+
+        String descAddEnch = "(L"+Obf.Enchantment+";I)V";
+        MethodNode mn2 = locateMethod(cn, descAddEnch, "addEnchantment", "func_77966_a", "a");
+
+        String setIntegerName = Obf.isDeobf() ? "setInteger" : "func_74768_a";
+
+        mn2.instructions.remove(locateTargetInsn(mn2, n -> n.getOpcode()==Opcodes.I2S));
+        AbstractInsnNode target2 = locateTargetInsn(mn2, n -> n.getOpcode()==Opcodes.INVOKEVIRTUAL && n.getPrevious().getPrevious().getPrevious().getOpcode()==Opcodes.LDC && ((LdcInsnNode)n.getPrevious().getPrevious().getPrevious()).cst.toString().equals("id"));
+        mn.instructions.insertBefore(target2, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, Obf.NBTTagCompound, setIntegerName, "(Ljava/lang/String;I)V", false));
+        mn.instructions.remove(target2);
+
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         cn.accept(cw);
@@ -262,11 +296,19 @@ class Obf {
             PotionEffect ="net/minecraft/potion/PotionEffect";
             SPacketEntityEffect = "net/minecraft/network/play/server/SPacketEntityEffect";
             PacketBuffer = "net/minecraft/network/PacketBuffer";
+            ItemStack = "net/minecraft/item/ItemStack";
+            ITooltipFlag = "net/minecraft/client/util/ITooltipFlag";
+            Enchantment = "net/minecraft/enchantment/Enchantment";
+            EntityPlayer = "net/minecraft/entity/player/EntityPlayer";
         } else {
             NBTTagCompound = "fy";
             PotionEffect = "va";
             SPacketEntityEffect = "kw";
             PacketBuffer = "gy";
+            ItemStack = "aip";
+            ITooltipFlag = "akb";
+            Enchantment = "alk";
+            EntityPlayer = "aed";
         }
     }
 
@@ -274,4 +316,8 @@ class Obf {
     public static String PotionEffect;
     public static String SPacketEntityEffect;
     public static String PacketBuffer;
+    public static String ItemStack;
+    public static String ITooltipFlag;
+    public static String Enchantment;
+    public static String EntityPlayer;
 }
