@@ -6,6 +6,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -110,24 +111,29 @@ public class JEIDTransformer implements IClassTransformer {
             throw new ASMException("The class ItemStack has broken mappings, should be "+cn.name);
         }
 
-        String descr = "(L"+Obf.EntityPlayer+";L"+Obf.ITooltipFlag+";)Ljava/util/List;";
-        String getIntegerName = Obf.isDeobf()?"getInteger":"func_74762_e";
-
-        MethodNode mn = locateMethod(cn, descr, "func_82840_a", "getTooltip", "a");
-        AbstractInsnNode target = locateTargetInsn(mn, n -> n.getOpcode()==Opcodes.INVOKEVIRTUAL && n.getPrevious().getOpcode()==Opcodes.LDC && ((LdcInsnNode)n.getPrevious()).cst.toString().equals("id"));
-        mn.instructions.insertBefore(target, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, Obf.NBTTagCompound, getIntegerName, "(Ljava/lang/String;)I", false));
-        mn.instructions.remove(target);
-
         String descAddEnch = "(L"+Obf.Enchantment+";I)V";
-        MethodNode mn2 = locateMethod(cn, descAddEnch, "addEnchantment", "func_77966_a", "a");
+        MethodNode mn = locateMethod(cn, descAddEnch, "addEnchantment", "func_77966_a", "a");
 
         String setIntegerName = Obf.isDeobf() ? "setInteger" : "func_74768_a";
 
-        mn2.instructions.remove(locateTargetInsn(mn2, n -> n.getOpcode()==Opcodes.I2S));
-        AbstractInsnNode target2 = locateTargetInsn(mn2, n -> n.getOpcode()==Opcodes.INVOKEVIRTUAL && n.getPrevious().getPrevious().getPrevious().getOpcode()==Opcodes.LDC && ((LdcInsnNode)n.getPrevious().getPrevious().getPrevious()).cst.toString().equals("id"));
+        mn.instructions.remove(locateTargetInsn(mn, n -> n.getOpcode()==Opcodes.I2S));
+        AbstractInsnNode target2 = locateTargetInsn(mn, n -> n.getOpcode()==Opcodes.INVOKEVIRTUAL && n.getPrevious().getPrevious().getPrevious().getOpcode()==Opcodes.LDC && ((LdcInsnNode)n.getPrevious().getPrevious().getPrevious()).cst.toString().equals("id"));
         mn.instructions.insertBefore(target2, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, Obf.NBTTagCompound, setIntegerName, "(Ljava/lang/String;I)V", false));
         mn.instructions.remove(target2);
 
+
+        String descr = "(L"+Obf.EntityPlayer+";L"+Obf.ITooltipFlag+";)Ljava/util/List;";
+        String getIntegerName = Obf.isDeobf()?"getInteger":"func_74762_e";
+
+        try {
+            Class.forName("net.minecraft.client.Minecraft", false, this.getClass().getClassLoader());
+            MethodNode mn2 = locateMethod(cn, descr, "func_82840_a", "getTooltip", "a");
+            AbstractInsnNode target = locateTargetInsn(mn2, n -> n.getOpcode() == Opcodes.INVOKEVIRTUAL && n.getPrevious().getOpcode() == Opcodes.LDC && ((LdcInsnNode) n.getPrevious()).cst.toString().equals("id"));
+            mn.instructions.insertBefore(target, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, Obf.NBTTagCompound, getIntegerName, "(Ljava/lang/String;)I", false));
+            mn.instructions.remove(target);
+        } catch(ClassNotFoundException e) {
+
+        }
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         cn.accept(cw);
