@@ -6,7 +6,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -125,14 +125,11 @@ public class JEIDTransformer implements IClassTransformer {
         String descr = "(L"+Obf.EntityPlayer+";L"+Obf.ITooltipFlag+";)Ljava/util/List;";
         String getIntegerName = Obf.isDeobf()?"getInteger":"func_74762_e";
 
-        try {
-            Class.forName("net.minecraft.client.Minecraft", false, this.getClass().getClassLoader());
+        if (FMLLaunchHandler.side().isClient()) {
             MethodNode mn2 = locateMethod(cn, descr, "func_82840_a", "getTooltip", "a");
             AbstractInsnNode target = locateTargetInsn(mn2, n -> n.getOpcode() == Opcodes.INVOKEVIRTUAL && n.getPrevious().getOpcode() == Opcodes.LDC && ((LdcInsnNode) n.getPrevious()).cst.toString().equals("id"));
             mn.instructions.insertBefore(target, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, Obf.NBTTagCompound, getIntegerName, "(Ljava/lang/String;)I", false));
             mn.instructions.remove(target);
-        } catch(ClassNotFoundException e) {
-
         }
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
