@@ -39,7 +39,7 @@ dependencies {
     compileOnly "2555:531:BiomesOPlenty-1.12.2-7.0.1.2384-universal@jar"
     compileOnly "2561:393:twilightforest-1.12.2-3.7.424-universal@jar"
     compileOnly "2569:273:Thaumcraft-1.12.2-6.1.BETA16@jar"
-    compileOnly "2572:684:AbyssalCraft-1.12.2-1.9.4.10@jar"
+    compileOnly "2691:339:AbyssalCraft-1.12.2-1.9.6@jar"
     compileOnly "2509:208:Creeping+Nether-2.0@jar"
     compileOnly "2497:541:GeographiCraft-1.12-0.8.9b@jar"
     compileOnly "2581:550:mystcraft-1.12.2-0.13.4.05@jar"
