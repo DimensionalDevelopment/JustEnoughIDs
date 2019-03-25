@@ -11,7 +11,7 @@
     "MixinBOPCommand",
     "MixinBlockTFMagicLogSpecial",
     "MixinUtils",
-    "MixinCleansingRitualMessage",
+    "MixinBiomeUtil",
     "MixinEntityPortal",
     "MixinDimensionManager",
     "MixinBiomeReplacer",
