@@ -11,7 +11,7 @@
     "biomesoplenty.MixinBOPCommand",
     "biomesoplenty.MixinModBiomes",
     "bookshelf.MixinWorldUtils",
-    "creepingnether.MixinEntityPortal",
+    "creepingnether.MixinCorruptorAbstract",
     "cyclopscore.MixinWorldHelpers",
     "extrautils2.MixinBiomeManip",
     "geographicraft.MixinDimensionManager",
