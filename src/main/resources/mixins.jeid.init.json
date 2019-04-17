@@ -5,10 +5,10 @@
   "target": "@env(INIT)",
   "minVersion": "0.6",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [],
-  "client": [
+  "mixins": [
     "MixinLoader"
   ],
+  "client": [],
   "injectors": {
     "maxShiftBy": 10
   }

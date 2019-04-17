@@ -1,4 +1,4 @@
-package org.dimdev.jeid.mixin.modsupport;
+package org.dimdev.jeid.mixin.modsupport.worldedit;
 
 import com.sk89q.worldedit.blocks.BaseBlock;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,4 +1,4 @@
-package org.dimdev.jeid.mixin.modsupport;
+package org.dimdev.jeid.mixin.modsupport.abyssalcraft;
 
 import com.shinoow.abyssalcraft.common.network.PacketDispatcher;
 import com.shinoow.abyssalcraft.common.network.client.CleansingRitualMessage;

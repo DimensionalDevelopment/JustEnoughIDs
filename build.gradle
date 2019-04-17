@@ -37,21 +37,27 @@ dependencies {
         exclude module: "commons-io"
     }
     compileOnly "2555:531:BiomesOPlenty-1.12.2-7.0.1.2384-universal@jar"
-    compileOnly "2561:393:twilightforest-1.12.2-3.7.424-universal@jar"
-    compileOnly "2569:273:Thaumcraft-1.12.2-6.1.BETA16@jar"
+    compileOnly "2686:476:twilightforest-1.12.2-3.9.888-universal@jar"
+    compileOnly "2629:23:Thaumcraft-1.12.2-6.1.BETA26@jar"
     compileOnly "2691:339:AbyssalCraft-1.12.2-1.9.6@jar"
-    compileOnly "2509:208:Creeping+Nether-2.0@jar"
+    compileOnly "2655:432:Creeping+Nether-2.2.2@jar"
     compileOnly "2497:541:GeographiCraft-1.12-0.8.9b@jar"
-    compileOnly "2581:550:mystcraft-1.12.2-0.13.4.05@jar"
+    compileOnly "2699:673:mystcraft-1.12.2-0.13.7.03@jar"
     compileOnly "2575:801:AdvancedRocketry-1.12.2-1.4.0-88-universal@jar"
-    compileOnly "2460:570:worldedit-forge-mc1.12-6.1.8-dist@jar"
-    compileOnly "2498:312:journeymap-1.12.2-5.5.2@jar"
+    compileOnly "2655:56:worldedit-forge-mc1.12.2-6.1.10-SNAPSHOT-dist@jar"
+    compileOnly "2682:920:journeymap-1.12.2-5.5.4@jar"
+    compileOnly "2683:823:Bookshelf-1.12.2-2.3.577@jar"
+    compileOnly "2691:93:CyclopsCore-1.12.2-1.1.1@jar"
+    compileOnly "2678:374:extrautils2-1.12-1.9.9@jar"
+    compileOnly "2683:667:TheBetweenlands-3.4.6-universal@jar"
+    compileOnly "2692:524:TofuCraftReload-0.0.2.1@jar"
+    compileOnly "2636:492:tropicraft-MC1.12.2-7.1.8.105@jar"
 }
 
 def travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
 def versionSuffix = travisBuildNumber != null ? travisBuildNumber : "SNAPSHOT"
 
-version "1.0.2-$versionSuffix"
+version "1.0.3-$versionSuffix"
 group "org.dimdev.jeid"
 archivesBaseName = "JustEnoughIDs"
 

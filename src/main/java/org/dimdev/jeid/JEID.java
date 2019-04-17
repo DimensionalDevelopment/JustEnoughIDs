@@ -117,7 +117,7 @@ public class JEID {
     public static class PotionTest extends Potion {
 
         private static final Random r = new Random();
-        private String nm = "";
+        private String nm;
 
         protected PotionTest(int id) {
             super(false, 0xFFFFFF & r.nextInt(Integer.MAX_VALUE));

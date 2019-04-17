@@ -1,4 +1,4 @@
-package org.dimdev.jeid.mixin.modsupport;
+package org.dimdev.jeid.mixin.modsupport.advancedrocketry;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

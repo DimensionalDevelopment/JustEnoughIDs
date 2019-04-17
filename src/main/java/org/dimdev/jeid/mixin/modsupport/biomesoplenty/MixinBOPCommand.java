@@ -1,4 +1,4 @@
-package org.dimdev.jeid.mixin.modsupport;
+package org.dimdev.jeid.mixin.modsupport.biomesoplenty;
 
 import biomesoplenty.common.command.BOPCommand;
 import org.spongepowered.asm.mixin.Mixin;

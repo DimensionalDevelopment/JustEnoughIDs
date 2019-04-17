@@ -1,4 +1,4 @@
-package org.dimdev.jeid.mixin.modsupport;
+package org.dimdev.jeid.mixin.modsupport.geographicraft;
 
 import climateControl.DimensionManager;
 import net.minecraft.init.Biomes;

@@ -1,4 +1,4 @@
-package org.dimdev.jeid.mixin.modsupport;
+package org.dimdev.jeid.mixin.modsupport.biomesoplenty;
 
 import biomesoplenty.common.init.ModBiomes;
 import net.minecraft.world.biome.Biome;

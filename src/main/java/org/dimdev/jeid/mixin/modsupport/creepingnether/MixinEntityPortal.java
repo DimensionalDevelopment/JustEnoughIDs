@@ -1,4 +1,4 @@
-package org.dimdev.jeid.mixin.modsupport;
+package org.dimdev.jeid.mixin.modsupport.creepingnether;
 
 import com.cutievirus.creepingnether.entity.EntityPortal;
 import net.minecraft.util.math.BlockPos;
