@@ -19,6 +19,8 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dimdev.jeid.network.MessageManager;
 
 import java.util.Random;
@@ -34,6 +36,8 @@ public class JEID {
     private static final boolean DEBUG_ENCHANT_IDS = false;
     public static final Biome errorBiome = new BiomeVoid(new Biome.BiomeProperties("A mod doesn't support extended biome IDs -- report to JEID"))
             .setRegistryName("jeid:error_biome");
+
+    public static Logger LOGGER = LogManager.getLogger("JustEnoughIDs");
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {

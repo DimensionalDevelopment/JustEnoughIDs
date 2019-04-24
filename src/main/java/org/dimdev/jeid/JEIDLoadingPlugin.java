@@ -15,7 +15,9 @@ public class JEIDLoadingPlugin implements IFMLLoadingPlugin {
 
     public JEIDLoadingPlugin() {
         MixinBootstrap.init();
+        JEID.LOGGER.info("Initializing JustEnoughIDs core mixins");
         Mixins.addConfiguration("mixins.jeid.core.json");
+        JEID.LOGGER.info("Initializing JustEnoughIDs initialization mixins");
         Mixins.addConfiguration("mixins.jeid.init.json");
     }
 

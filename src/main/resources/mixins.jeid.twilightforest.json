@@ -1,0 +1,18 @@
+{
+  "package": "org.dimdev.jeid.mixin.modsupport.twilightforest",
+  "plugin": "org.dimdev.jeid.mixin.modsupport.twilightforest.TwilightMixinPlugin",
+  "required": true,
+  "refmap": "mixins.jeid.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.6",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinBlockTFMagicLogSpecial",
+    "MixinBlockTFMagicLogSpecial_Old",
+    "MixinGenLayerTFRiverMix"
+  ],
+  "client": [],
+  "injectors": {
+    "maxShiftBy": 10
+  }
+}

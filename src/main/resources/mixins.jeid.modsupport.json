@@ -23,8 +23,6 @@
     "tofucraft.MixinGenLayerRiverMix",
     "tofucraft.MixinGenLayerTofuVoronoiZoom",
     "tropicraft.MixinGenLayerTropiVoronoiZoom",
-    "twilightforest.MixinBlockTFMagicLogSpecial",
-    "twilightforest.MixinGenLayerTFRiverMix",
     "worldedit.MixinBaseBlock"
   ],
   "client": [],
