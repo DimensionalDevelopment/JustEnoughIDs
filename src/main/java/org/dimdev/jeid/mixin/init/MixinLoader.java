@@ -4,7 +4,6 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModClassLoader;
 import net.minecraftforge.fml.common.ModContainer;
-import org.dimdev.jeid.JEID;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixins;
@@ -41,7 +40,6 @@ public class MixinLoader {
         }
 
         // Add and reload mixin configs
-        JEID.LOGGER.info("Initializing JustEnoughIDs modsupport mixins");
         Mixins.addConfiguration("mixins.jeid.modsupport.json");
         Mixins.addConfiguration("mixins.jeid.twilightforest.json");
 

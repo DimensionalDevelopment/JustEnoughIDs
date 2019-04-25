@@ -10,14 +10,15 @@ import java.util.Map;
 
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 @IFMLLoadingPlugin.SortingIndex(-7500)
+@IFMLLoadingPlugin.Name("JustEnoughIDs Extension Plugin")
 //@IFMLLoadingPlugin.TransformerExclusions("org.dimdev.jeid.")
 public class JEIDLoadingPlugin implements IFMLLoadingPlugin {
 
     public JEIDLoadingPlugin() {
         MixinBootstrap.init();
-        JEID.LOGGER.info("Initializing JustEnoughIDs core mixins");
+        Utils.LOGGER.info("Initializing JustEnoughIDs core mixins");
         Mixins.addConfiguration("mixins.jeid.core.json");
-        JEID.LOGGER.info("Initializing JustEnoughIDs initialization mixins");
+        Utils.LOGGER.info("Initializing JustEnoughIDs initialization mixins");
         Mixins.addConfiguration("mixins.jeid.init.json");
     }
 
