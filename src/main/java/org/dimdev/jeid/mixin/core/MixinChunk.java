@@ -1,6 +1,5 @@
 package org.dimdev.jeid.mixin.core;
 
-import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;

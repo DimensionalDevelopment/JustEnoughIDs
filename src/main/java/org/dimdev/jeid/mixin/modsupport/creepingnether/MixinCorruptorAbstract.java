@@ -22,7 +22,7 @@ public abstract class MixinCorruptorAbstract {
     @Shadow public abstract Biome getBiome();
 
     @Overwrite(remap = false)
-    public  void corruptBiome(World world, BlockPos pos) {
+    public void corruptBiome(World world, BlockPos pos) {
         if (!world.isBlockLoaded(pos)) return;
         Biome oldBiome = world.getBiome(pos);
         if (oldBiome == this.getBiome() || oldBiome != Biomes.HELL && this.getBiome() != Ref.biomeCreepingNether) return;

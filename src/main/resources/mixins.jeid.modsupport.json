@@ -8,6 +8,7 @@
   "mixins": [
     "abyssalcraft.MixinBiomeUtil",
     "advancedrocketry.MixinBiomeHandler",
+    "advancedrocketry.MixinPacketBiomeIDChange",
     "biomesoplenty.MixinBOPCommand",
     "biomesoplenty.MixinModBiomes",
     "bookshelf.MixinWorldUtils",
@@ -17,6 +18,7 @@
     "extrautils2.MixinWorldProviderSpecialDim",
     "gaiadimension.MixinGenLayerGDRiverMix",
     "geographicraft.MixinDimensionManager",
+    "hammercore.MixinWorldLocation",
     "journeymap.MixinChunkMD",
     "mystcraft.MixinBiomeReplacer",
     "thaumcraft.MixinUtils",

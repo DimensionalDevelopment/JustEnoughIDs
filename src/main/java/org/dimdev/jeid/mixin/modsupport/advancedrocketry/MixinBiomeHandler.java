@@ -4,49 +4,51 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.dimdev.jeid.INewChunk;
-import org.dimdev.jeid.network.BiomeChangeMessage;
-import org.dimdev.jeid.network.MessageManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Pseudo;
+import zmaster587.advancedRocketry.network.PacketBiomeIDChange;
 import zmaster587.advancedRocketry.util.BiomeHandler;
+import zmaster587.libVulpes.network.PacketHandler;
+import zmaster587.libVulpes.util.HashedBlockPosition;
 
 @Pseudo
 @Mixin(BiomeHandler.class)
 public class MixinBiomeHandler {
-    @Overwrite(remap = false)
+    /**
+     * @author sk2048
+     */
+    @Overwrite
     public static void changeBiome(World world, int biomeId, BlockPos pos) {
-        changeBiome(world, biomeId, world.getChunk(pos), pos);
-    }
+        Chunk chunk = world.getChunk(pos);
 
-    @Overwrite(remap = false)
-    public static void changeBiome(World world, int biomeId, Chunk chunk, BlockPos pos) {
         Biome biome = world.getBiome(pos);
         Biome biomeTo = Biome.getBiome(biomeId);
 
-        if (biome == biomeTo) {
+        if (biome == biomeTo)
             return;
-        }
-
-        int x = pos.getX();
-        int z = pos.getZ();
 
         if (biome.topBlock != biomeTo.topBlock) {
-            int topBlockY = chunk.getHeightValue(x & 15, z & 15) - 1;
+            BlockPos yy = world.getHeight(pos);
 
-            while (!world.getBlockState(new BlockPos(x, topBlockY, z)).isOpaqueCube() && topBlockY > 0) topBlockY--;
-            if (topBlockY == 0) return;
+            for (; !world.getBlockState(yy).isOpaqueCube() || yy.getY() < 0; yy = yy.down()) ;
 
-            if (chunk.getBlockState(x & 15, topBlockY, z & 15) == biome.topBlock) {
-                chunk.setBlockState(new BlockPos(x & 15, topBlockY, z & 15), biomeTo.topBlock);
-            }
+            if (world.getBlockState(yy) == biome.topBlock)
+                world.setBlockState(yy, biomeTo.topBlock);
         }
 
-        ((INewChunk) chunk).getIntBiomeArray()[(pos.getZ() & 15) << 4 | pos.getX() & 15] = biomeId;
+        ((INewChunk) chunk).getIntBiomeArray()[(pos.getZ() & 0xF) << 4 | pos.getX() & 0xF] = biomeId;
+        chunk.markDirty();
 
-        NetworkRegistry.TargetPoint point = new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 300);
-        MessageManager.CHANNEL.sendToAllAround(new BiomeChangeMessage(pos.getX(), pos.getY(), biomeId), point);
+        PacketHandler.sendToNearby(new PacketBiomeIDChange(chunk, world, new HashedBlockPosition(pos)), world.provider.getDimension(), pos, 256);
+    }
+
+    /**
+     * @author sk2048
+     */
+    @Overwrite
+    public static void changeBiome(World world, int biomeId, Chunk chunk, BlockPos pos) {
+        changeBiome(world, biomeId, pos);
     }
 }
