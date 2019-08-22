@@ -14,6 +14,8 @@
     "creepingnether.MixinCorruptorAbstract",
     "cyclopscore.MixinWorldHelpers",
     "extrautils2.MixinBiomeManip",
+    "extrautils2.MixinWorldProviderSpecialDim",
+    "gaiadimension.MixinGenLayerGDRiverMix",
     "geographicraft.MixinDimensionManager",
     "journeymap.MixinChunkMD",
     "mystcraft.MixinBiomeReplacer",

@@ -7,8 +7,12 @@ import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.chunk.Chunk;
 import org.dimdev.jeid.INewChunk;
 import org.dimdev.jeid.JEID;
+import org.dimdev.jeid.Utils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Arrays;
 
@@ -35,18 +39,24 @@ public class MixinChunk implements INewChunk {
 
     @Overwrite
     public byte[] getBiomeArray() {
+        Utils.LOGGER.error("A mod is accessing the byte biome array, report to JEID!", new Throwable("Chunk#getBiomeArray"));
         byte[] arr = new byte[256];
         Arrays.fill(arr, errorBiomeID);
         return arr;
     }
 
-    @Overwrite
-    public Biome getBiome(BlockPos pos, BiomeProvider provider) {
-        int x = pos.getX() & 15;
-        int z = pos.getZ() & 15;
-        int index = z << 4 | x;
-        int biomeID = intBiomeArray[index];
-        Biome biome = Biome.getBiome(biomeID);
-        return biome == null ? Biomes.PLAINS : biome;
+    @Redirect(method = "getBiome", at = @At(value = "FIELD", target = "Lnet/minecraft/world/chunk/Chunk;blockBiomeArray:[B", args = "array=get"))
+    private int getIntBiomeIdFromArray(byte[] array, int index) {
+        return this.intBiomeArray[index];
+    }
+
+    @Inject(method = "getBiome", at = @At(value = "FIELD", target = "Lnet/minecraft/world/chunk/Chunk;blockBiomeArray:[B", args = "array=set"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void setIntBiomeIdInArray(BlockPos pos, BiomeProvider provider, CallbackInfoReturnable<Biome> cir, int i, int j, int k, Biome biome) {
+        this.intBiomeArray[j << 4 | i] = k;
+    }
+
+    @ModifyConstant(method = "getBiome", constant = @Constant(intValue = 0xFF))
+    private int getBiomeBitmask(int oldValue) {
+        return 0xFFFFFFFF;
     }
 }

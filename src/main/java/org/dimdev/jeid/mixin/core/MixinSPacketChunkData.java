@@ -29,13 +29,16 @@ public abstract class MixinSPacketChunkData {
         return false;
     }
 
+    /** @reason Disable adding biome byte array size. **/
+    @Redirect(method = "calculateChunkSize", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/play/server/SPacketChunkData;isFullChunk()Z", ordinal = 1))
+    public boolean getIsFullChunk1(SPacketChunkData packet) {
+        return false;
+    }
+
     @Inject(method = "calculateChunkSize", at = @At(value = "RETURN"), cancellable = true)
     public void onReturn(Chunk chunkIn, boolean p_189556_2_, int p_189556_3_, CallbackInfoReturnable<Integer> ci) {
         if (this.isFullChunk()) {
             int size = ci.getReturnValue();
-
-            // First, we subtract off the length added by Vanilla (the line 'i += chunkIn.getBiomeArray().length;')
-            size -= chunkIn.getBiomeArray().length;
 
             // Now, we add on the actual length of the VarIntArray we're going to be writing in extractChunkData
             size += this.getVarIntArraySize(((INewChunk) chunkIn).getIntBiomeArray());

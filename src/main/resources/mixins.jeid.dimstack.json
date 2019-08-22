@@ -1,0 +1,16 @@
+{
+  "package": "org.dimdev.jeid.mixin.modsupport.dimstack",
+  "plugin": "org.dimdev.jeid.mixin.modsupport.dimstack.DimstackPlugin",
+  "required": true,
+  "refmap": "mixins.jeid.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.6",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinChunkPrimer"
+  ],
+  "client": [],
+  "injectors": {
+    "maxShiftBy": 10
+  }
+}
