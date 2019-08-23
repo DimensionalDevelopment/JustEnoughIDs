@@ -14,6 +14,6 @@ public class MixinBiomeHelper {
 
     @ModifyConstant(method = "getNextFreeBiomeId", constant = @Constant(intValue = 0x100), remap = false)
     private static int getLoopUpperLimit(int oldValue) {
-        return 0xEFFFFFFF;
+        return 0x7FFFFFFF;
     }
 }
