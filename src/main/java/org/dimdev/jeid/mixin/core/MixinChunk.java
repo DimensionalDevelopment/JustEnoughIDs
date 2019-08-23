@@ -38,7 +38,6 @@ public class MixinChunk implements INewChunk {
 
     @Overwrite
     public byte[] getBiomeArray() {
-        Utils.LOGGER.error("A mod is accessing the byte biome array, report to JEID!", new Throwable("Chunk#getBiomeArray"));
         byte[] arr = new byte[256];
         Arrays.fill(arr, errorBiomeID);
         return arr;
