@@ -1,7 +1,10 @@
 package org.dimdev.jeid.network;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -40,8 +43,12 @@ public class BiomeArrayMessage implements IMessage {
     public static class Handler implements IMessageHandler<BiomeArrayMessage, IMessage> {
         @Override
         public IMessage onMessage(BiomeArrayMessage message, MessageContext ctx) {
-            Chunk chunk = ctx.getServerHandler().player.world.getChunk(message.chunkX, message.chunkZ);
-            ((INewChunk) chunk).setIntBiomeArray(message.biomeArray);
+            Minecraft.getMinecraft().addScheduledTask(() -> {
+                WorldClient world = Minecraft.getMinecraft().world;
+                Chunk chunk = world.getChunk(message.chunkX, message.chunkZ);
+                ((INewChunk) chunk).setIntBiomeArray(message.biomeArray);
+                world.markBlockRangeForRenderUpdate(new BlockPos(chunk.getPos().getXStart(), 0, chunk.getPos().getZStart()), new BlockPos(chunk.getPos().getXEnd(), 0, chunk.getPos().getZEnd()));
+            });
             return null;
         }
     }
