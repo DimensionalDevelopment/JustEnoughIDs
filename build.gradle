@@ -55,6 +55,7 @@ dependencies {
     compileOnly "2692:524:TofuCraftReload-0.0.2.1@jar"
     compileOnly "2636:492:tropicraft-MC1.12.2-7.1.8.105@jar"
     compileOnly "2724:738:gaiadimension-1.12.2-1.0.5@jar"
+    compileOnly "2572:722:BiomeTweaker-1.12.2-3.2.354@jar"
 }
 
 def travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")

@@ -11,6 +11,7 @@
     "advancedrocketry.MixinPacketBiomeIDChange",
     "biomesoplenty.MixinBOPCommand",
     "biomesoplenty.MixinModBiomes",
+    "biometweaker.MixinCommandSetBiome",
     "bookshelf.MixinWorldUtils",
     "creepingnether.MixinCorruptorAbstract",
     "cyclopscore.MixinWorldHelpers",
