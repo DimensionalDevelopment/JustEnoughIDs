@@ -73,6 +73,7 @@ public class MixinPacketBiomeIDChange {
     /**
      * @author sk2048
      */
+    @SideOnly(Side.CLIENT)
     @Overwrite(remap = false)
     public void executeClient(EntityPlayer thePlayer) {
         if (thePlayer.world.provider.getDimension() == worldId) {
