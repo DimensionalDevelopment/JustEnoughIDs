@@ -64,7 +64,7 @@ public class JEIDTransformer implements IClassTransformer {
     }
 
     private static MethodNode locateMethod(ClassNode cn, String desc, String... namesIn) {
-        return cn.methods.parallelStream()
+        return cn.methods.stream()
                 .filter(n -> n.desc.equals(desc) && anyMatch(namesIn, n.name))
                 .findAny().orElseThrow(() -> new ASMException(getNames(namesIn) +": "+desc+" cannot be found in "+cn.name, cn));
     }
