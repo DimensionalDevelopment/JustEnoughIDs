@@ -18,7 +18,8 @@
     "MixinChunkProviderServer",
     "MixinWorldInfo",
     "MixinEnchantmentHelper",
-    "MixinItemEnchantedBook"
+    "MixinItemEnchantedBook",
+    "MixinPacketBuffer"
   ],
   "client": [
     "client.MixinChunk",

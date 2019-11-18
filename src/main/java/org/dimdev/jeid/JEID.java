@@ -51,7 +51,6 @@ public class JEID {
             for (int i = 0; i < 5000; i++) {
                 Block block = new Block(Material.GROUND)
                         .setCreativeTab(CreativeTabs.BUILDING_BLOCKS)
-                        .setRegistryName("block_" + i)
                         .setRegistryName(new ResourceLocation("jeid:block_" + i));
 
                 blockRegistry.register(block);
@@ -64,7 +63,6 @@ public class JEID {
             for (int i = 0; i < 40000; i++) {
                 Item item = new Item()
                         .setCreativeTab(CreativeTabs.FOOD)
-                        .setRegistryName("item_" + i)
                         .setRegistryName(new ResourceLocation("jeid:item_" + i));
 
                 itemRegistry.register(item);
