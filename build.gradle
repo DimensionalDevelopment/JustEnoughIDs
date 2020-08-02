@@ -1,12 +1,14 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url "http://files.minecraftforge.net/maven" }
-        maven { url "http://repo.spongepowered.org/maven" }
+        maven { url "https://files.minecraftforge.net/maven" }
+        maven { url "https://repo.spongepowered.org/maven" }
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
         classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath 'com.wynprice.cursemaven:CurseMaven:2.1.1'
         classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
     }
 }
@@ -15,10 +17,13 @@ apply plugin: "java"
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "org.spongepowered.mixin"
+apply plugin: 'com.wynprice.cursemaven'
 
 repositories {
     maven { url "http://repo.spongepowered.org/maven" }
+    maven { url "https://maven.covers1624.net" }
     maven { url "http://www.dimdev.org/maven" }
+    maven { url "http://maven.tterrag.com/" }
     ivy {
         url "https://google.com/404"
         ivyPattern("https://google.com/404") // Workaround for https://github.com/gradle/gradle/issues/4107
@@ -56,6 +61,7 @@ dependencies {
     compileOnly "2636:492:tropicraft-MC1.12.2-7.1.8.105@jar"
     compileOnly "2724:738:gaiadimension-1.12.2-1.0.5@jar"
     compileOnly "2572:722:BiomeTweaker-1.12.2-3.2.354@jar"
+    compileOnly "curse.maven:bewitchment:3021059"
 }
 
 def travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
