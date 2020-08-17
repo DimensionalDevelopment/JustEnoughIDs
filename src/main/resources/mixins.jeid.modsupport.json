@@ -30,7 +30,8 @@
     "tofucraft.MixinGenLayerRiverMix",
     "tofucraft.MixinGenLayerTofuVoronoiZoom",
     "tropicraft.MixinGenLayerTropiVoronoiZoom",
-    "worldedit.MixinBaseBlock"
+    "worldedit.MixinBaseBlock",
+    "bewitchment.MixinUtils"
   ],
   "client": [],
   "injectors": {

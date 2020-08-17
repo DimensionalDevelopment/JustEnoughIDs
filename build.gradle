@@ -20,9 +20,29 @@ apply plugin: "org.spongepowered.mixin"
 apply plugin: 'com.wynprice.cursemaven'
 
 repositories {
+    maven { url = "http://dvs1.progwml6.com/files/maven" }
+    maven { url = "https://minecraft.curseforge.com/api/maven" }
+    maven { url "http://maven.tterrag.com" }
+    maven { url "https://maven.blamejared.com" }
+    maven { url "https://maven.mcmoddev.com/" }
     maven { url "http://repo.spongepowered.org/maven" }
     maven { url "https://maven.blamejared.com" }
     maven { url "http://maven.tterrag.com" }
+    maven { url = "https://minecraft.curseforge.com/api/maven" }
+	    maven {
+        url = "http://minecraft.curseforge.com/api/maven/"
+    }
+    maven {
+        name = "buildcraft"
+        url = "https://mod-buildcraft.com/maven"
+    }
+    maven {
+        name = "thiakil"
+        url = "http://maven.thiakil.com"
+    }
+    maven {
+        url = "http://dvs1.progwml6.com/files/maven"
+    }	
     ivy {
         url "https://google.com/404"
         ivyPattern("https://google.com/404") // Workaround for https://github.com/gradle/gradle/issues/4107
