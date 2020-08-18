@@ -1,6 +1,7 @@
 package org.dimdev.jeid.mixin.modsupport.bewitchment;
 
 import com.bewitchment.common.world.BiomeChangingUtils;
+import net.minecraft.network.play.server.SPacketChunkData;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -21,6 +22,8 @@ public class MixinUtils {
         Chunk chunk = world.getChunk(pos);
         ((INewChunk) chunk).getIntBiomeArray()[(pos.getZ() & 0xF) << 4 | pos.getX() & 0xF] = Biome.getIdForBiome(biome);
         chunk.markDirty();
+        chunk.getWorld().getMinecraftServer().getPlayerList().getPlayers().forEach(p -> p.connection.sendPacket(new SPacketChunkData(chunk, 65535)));
+
         if (!world.isRemote) {
             MessageManager.CHANNEL.sendToAllAround(
                     new BiomeChangeMessage(pos.getX(), pos.getZ(), Biome.getIdForBiome(biome)),
