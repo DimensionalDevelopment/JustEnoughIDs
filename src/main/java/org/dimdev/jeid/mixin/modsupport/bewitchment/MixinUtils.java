@@ -1,12 +1,13 @@
 package org.dimdev.jeid.mixin.modsupport.bewitchment;
 
-import com.bewitchment.Bewitchment;
-import com.bewitchment.common.network.PacketChangeBiome;
 import com.bewitchment.common.world.BiomeChangingUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.dimdev.jeid.INewChunk;
+import org.dimdev.jeid.network.BiomeChangeMessage;
+import org.dimdev.jeid.network.MessageManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -24,7 +25,8 @@ public class MixinUtils {
 		newChunk.setIntBiomeArray(array);
 
 		if (!world.isRemote) {
-			Bewitchment.network.sendToAll(new PacketChangeBiome(Biome.getBiomeForId(Biome.getIdForBiome(biome)), pos));
+			NetworkRegistry.TargetPoint point = new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), world.getHeight(pos).getY(), pos.getZ(), 32.0D);
+			MessageManager.CHANNEL.sendToAllAround(new BiomeChangeMessage(pos.getX(), pos.getZ(), Biome.getIdForBiome(biome)), point);
 		}
 	}
 }
