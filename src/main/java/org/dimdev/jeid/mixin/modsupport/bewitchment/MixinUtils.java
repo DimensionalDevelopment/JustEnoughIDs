@@ -29,4 +29,9 @@ public class MixinUtils {
 			MessageManager.CHANNEL.sendToAllAround(new BiomeChangeMessage(pos.getX(), pos.getZ(), Biome.getIdForBiome(biome)), point);
 		}
 	}
+
+	@Overwrite
+	public static void setMultiBiome(World world, Biome biome, BlockPos... poses) {
+		
+	}
 }
