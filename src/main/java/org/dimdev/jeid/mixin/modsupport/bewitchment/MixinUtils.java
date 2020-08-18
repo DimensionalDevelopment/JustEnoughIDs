@@ -17,8 +17,6 @@ import org.spongepowered.asm.mixin.Pseudo;
 public class MixinUtils {
 	@Overwrite
 	public static void setBiome(World world, Biome biome, BlockPos pos) {
-		if (biome == null) return;
-
 		INewChunk newChunk = (INewChunk) world.getChunk(pos);
 		int[] array = newChunk.getIntBiomeArray();
 		array[(pos.getX() & 15) << 4 | pos.getZ() & 15] = Biome.getIdForBiome(biome) & 255;
