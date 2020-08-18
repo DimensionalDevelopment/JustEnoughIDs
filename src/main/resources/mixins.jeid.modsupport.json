@@ -9,6 +9,8 @@
     "abyssalcraft.MixinBiomeUtil",
     "advancedrocketry.MixinBiomeHandler",
     "advancedrocketry.MixinPacketBiomeIDChange",
+    "bewitchment.MixinRitualBiomeShift",
+    "bewitchment.MixinUtils",
     "biomesoplenty.MixinBOPCommand",
     "biomesoplenty.MixinModBiomes",
     "biometweaker.MixinBiomeColorMappings",
@@ -30,8 +32,7 @@
     "tofucraft.MixinGenLayerRiverMix",
     "tofucraft.MixinGenLayerTofuVoronoiZoom",
     "tropicraft.MixinGenLayerTropiVoronoiZoom",
-    "worldedit.MixinBaseBlock",
-    "bewitchment.MixinUtils"
+    "worldedit.MixinBaseBlock"
   ],
   "client": [],
   "injectors": {
