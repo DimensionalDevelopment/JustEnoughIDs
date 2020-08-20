@@ -85,7 +85,7 @@ dependencies {
     compileOnly "2572:722:BiomeTweaker-1.12.2-3.2.354@jar"
     compileOnly "com.azanor.baubles:Baubles:1.12-1.5.2"
     compileOnly "vazkii.patchouli:Patchouli:1.0-20.99"
-    compileOnly "curse.maven:bewitchment:3033429"
+    compileOnly "curse.maven:bewitchment:3038090"
 }
 
 def travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
