@@ -9,6 +9,8 @@
     "abyssalcraft.MixinBiomeUtil",
     "advancedrocketry.MixinBiomeHandler",
     "advancedrocketry.MixinPacketBiomeIDChange",
+    "bewitchment.MixinRitualBiomeShift",
+    "bewitchment.MixinUtils",
     "biomesoplenty.MixinBOPCommand",
     "biomesoplenty.MixinModBiomes",
     "biometweaker.MixinBiomeColorMappings",
