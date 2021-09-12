@@ -1,23 +1,84 @@
+import wtf.gofancy.fancygradle.patch.Patch
+
 buildscript {
     repositories {
-        jcenter()
-        maven { url "https://files.minecraftforge.net/maven" }
-        maven { url "https://repo.spongepowered.org/maven" }
+        maven { url = 'https://maven.minecraftforge.net' }
         maven { url "https://plugins.gradle.org/m2/" }
-
+        maven { url "https://repo.spongepowered.org/repository/maven-public" }
+        jcenter()
+        mavenCentral()
+        maven {
+            name 'FancyGradle'
+            url 'https://gitlab.com/api/v4/projects/26758973/packages/maven'
+        }
     }
     dependencies {
         classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
-        classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
-	classpath 'com.wynprice.cursemaven:CurseMaven:2.1.1'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:5.0.+'
+        classpath "org.spongepowered:mixingradle:0.7-SNAPSHOT"
+        classpath group: 'wtf.gofancy.fancygradle', name: 'wtf.gofancy.fancygradle.gradle.plugin', version: '1.1.+'
     }
 }
 
-apply plugin: "java"
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply plugin: 'wtf.gofancy.fancygradle'
 apply plugin: "com.github.johnrengelman.shadow"
-apply plugin: "net.minecraftforge.gradle.forge"
-apply plugin: "org.spongepowered.mixin"
+apply plugin: 'org.spongepowered.mixin'
+
+def travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
+def versionSuffix = travisBuildNumber != null ? travisBuildNumber : "SNAPSHOT"
+
+version "1.0.4-$versionSuffix"
+group "org.dimdev.jeid"
+archivesBaseName = "JustEnoughIDs"
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
+minecraft {
+    // The mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   Snapshot are built nightly.
+    // stable_#            Stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not always work.
+    // Simply re-run your setup task after changing the mappings to update your workspace.
+    mappings channel: 'stable', version: '39-1.12'
+
+    accessTransformer = file('src/main/resources/META-INF/jeid_at.cfg')
+
+    // Default run configurations.
+    // These can be tweaked, removed, or duplicated as needed.
+    runs {
+        client {
+
+            jvmArg "-Dfml.coreMods.load=org.dimdev.jeid.JEIDLoadingPlugin"
+                    jvmArg "-Dmixin.hotSwap=true"
+            jvmArg "-Dmixin.checks.interfaces=true"
+
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+
+        server {
+
+            jvmArg "-Dfml.coreMods.load=org.dimdev.jeid.JEIDLoadingPlugin"
+                    jvmArg "-Dmixin.hotSwap=true"
+            jvmArg "-Dmixin.checks.interfaces=true"
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+    }
+}
 
 repositories {
     maven { url = "https://dvs1.progwml6.com/files/maven" }
@@ -26,12 +87,6 @@ repositories {
     maven { url "https://maven.blamejared.com" }
     maven { url "https://maven.mcmoddev.com/" }
     maven { url "https://repo.spongepowered.org/maven" }
-    maven { url "https://maven.blamejared.com" }
-    maven { url "https://maven.tterrag.com" }
-    maven { url = "https://minecraft.curseforge.com/api/maven" }
-	    maven {
-        url = "https://minecraft.curseforge.com/api/maven/"
-    }
     maven {
         name = "buildcraft"
         url = "https://mod-buildcraft.com/maven"
@@ -42,18 +97,21 @@ repositories {
     }
     maven {
         url = "https://dvs1.progwml6.com/files/maven"
-    }	
+    }
     maven {
-        url = "https://www.cursemaven.com"
-    }	
-    ivy {
-        url "https://google.com/404"
-        ivyPattern("https://google.com/404") // Workaround for https://github.com/gradle/gradle/issues/4107
-        artifactPattern("https://media.forgecdn.net/files/[organisation]/[module]/[revision].[ext]")
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
     }
 }
 
 dependencies {
+    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
+    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2855'
+
     implementation("org.spongepowered:mixin:0.8") {
         exclude module: "asm-commons"
         exclude module: "asm-tree"
@@ -63,85 +121,66 @@ dependencies {
         exclude module: "gson"
         exclude module: "commons-io"
     }
-    compileOnly "2555:531:BiomesOPlenty-1.12.2-7.0.1.2384-universal@jar"
-    compileOnly "2686:476:twilightforest-1.12.2-3.9.888-universal@jar"
-    compileOnly "2629:23:Thaumcraft-1.12.2-6.1.BETA26@jar"
-    compileOnly "2691:339:AbyssalCraft-1.12.2-1.9.6@jar"
-    compileOnly "2655:432:Creeping+Nether-2.2.2@jar"
-    compileOnly "2497:541:GeographiCraft-1.12-0.8.9b@jar"
-    compileOnly "2699:673:mystcraft-1.12.2-0.13.7.03@jar"
-    compileOnly "2710:204:HammerCore-1.12.2-2.0.4.7@jar"
-    compileOnly "2733:984:AdvancedRocketry-1.12.2-1.6.0-151-universal@jar"
-    compileOnly "2731:147:LibVulpes-1.12.2-0.4.1-59-universal@jar"
-    compileOnly "2655:56:worldedit-forge-mc1.12.2-6.1.10-SNAPSHOT-dist@jar"
-    compileOnly "2682:920:journeymap-1.12.2-5.5.4@jar"
-    compileOnly "2683:823:Bookshelf-1.12.2-2.3.577@jar"
-    compileOnly "2691:93:CyclopsCore-1.12.2-1.1.1@jar"
-    compileOnly "2678:374:extrautils2-1.12-1.9.9@jar"
-    compileOnly "2683:667:TheBetweenlands-3.4.6-universal@jar"
-    compileOnly "2692:524:TofuCraftReload-0.0.2.1@jar"
-    compileOnly "2636:492:tropicraft-MC1.12.2-7.1.8.105@jar"
-    compileOnly "2724:738:gaiadimension-1.12.2-1.0.5@jar"
-    compileOnly "2572:722:BiomeTweaker-1.12.2-3.2.354@jar"
-    compileOnly "com.azanor.baubles:Baubles:1.12-1.5.2"
-    compileOnly "vazkii.patchouli:Patchouli:1.0-20.99"
-    compileOnly "curse.maven:bewitchment-285439:3256343"
+    compileOnly fg.deobf( "curse.maven:BiomesOPlenty-220318:2842510" )
+    compileOnly fg.deobf( "curse.maven:twilightforest-227639:3051450" )
+    compileOnly fg.deobf( "curse.maven:Thaumcraft-223628:2629023" )
+    compileOnly fg.deobf( "curse.maven:AbyssalCraft-53686:3425234" )
+    compileOnly fg.deobf( "curse.maven:Creeping+Nether-268104:2655432" )
+    compileOnly fg.deobf( "curse.maven:GeographiCraft-76544:2497541" )
+    compileOnly fg.deobf( "curse.maven:mystcraft-224599:2958490" )
+    compileOnly fg.deobf( "curse.maven:HammerCore-247401:3366814" )
+    compileOnly fg.deobf( "curse.maven:AdvancedRocketry-236542:3015079" )
+    compileOnly fg.deobf( "curse.maven:LibVulpes-236541:3434864" )
+    compileOnly fg.deobf( "curse.maven:worldedit-225608:2941712" )
+    compileOnly fg.deobf( "curse.maven:journeymap-32274:2916002" )
+    compileOnly fg.deobf( "curse.maven:Bookshelf-228525:2836960" )
+    compileOnly fg.deobf( "curse.maven:CyclopsCore-232758:3159497" )
+    compileOnly fg.deobf( "curse.maven:extrautils2-225561:2678374" )
+    compileOnly fg.deobf( "curse.maven:TheBetweenlands-243363:3248202" )
+    compileOnly fg.deobf( "curse.maven:TofuCraftReload-317469:3115668" )
+    compileOnly fg.deobf( "curse.maven:tropicraft-254794:2713918" )
+    compileOnly fg.deobf( "curse.maven:gaiadimension-302529:2724738" )
+    compileOnly fg.deobf( "curse.maven:BiomeTweaker-228895:3112142" )
+    compileOnly fg.deobf( "curse.maven:baubles-227083:2518667" )
+    compileOnly fg.deobf( "curse.maven:Patchouli-306770:3162874" )
+    compileOnly fg.deobf( "curse.maven:bewitchment-285439:3256343" )
 }
 
-def travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
-def versionSuffix = travisBuildNumber != null ? travisBuildNumber : "SNAPSHOT"
+// Example for how to get properties into the manifest for reading by the runtime..
+jar {
+    manifest {
+        attributes([
+                "FMLCorePluginContainsFMLMod": "true",
+                "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+                "FMLCorePlugin": "org.dimdev.jeid.JEIDLoadingPlugin",
+                "ForceLoadAsMod": "true",
+                "FMLAT": "jeid_at.cfg"
+        ])
+    }
+}
 
-version "1.0.3-$versionSuffix"
-group "org.dimdev.jeid"
-archivesBaseName = "JustEnoughIDs"
+// Example configuration to allow publishing using the maven-publish task
+// This is the preferred method to reobfuscate your jar file
+jar.finalizedBy('reobfJar')
+// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+//publish.dependsOn('reobfJar')
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
 
-minecraft {
-    version "1.12.2-14.23.5.2847"
-    runDir "run"
-    mappings "stable_39"
-    makeObfSourceJar false
-
-    def args = [
-            "-Dfml.coreMods.load=org.dimdev.jeid.JEIDLoadingPlugin",
-            "-Dmixin.hotSwap=true",
-            "-Dmixin.checks.interfaces=true"
-    ]
-    clientJvmArgs.addAll(args)
-    serverJvmArgs.addAll(args)
+    }
 }
 
 mixin {
     add sourceSets.main, "mixins.jeid.refmap.json"
-}
-
-reobf {
-    shadowJar {
-        mappingType = "SEARGE"
-    }
-}
-
-processResources {
-    filesMatching("mcmod.info") {
-        expand "version": project.version, "mcversion": project.minecraft.version
-    }
-
-    // Re-run this task when these change
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-}
-
-jar {
-    classifier "nolibs"
-    manifest.attributes(
-            "FMLCorePluginContainsFMLMod": "true",
-            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
-            "FMLCorePlugin": "org.dimdev.jeid.JEIDLoadingPlugin",
-            "ForceLoadAsMod": "true",
-            "FMLAT": "jeid_at.cfg"
-    )
 }
 
 shadowJar {
@@ -160,6 +199,12 @@ artifacts {
     archives sourcesJar
 }
 
-// These are broken
-runClient.group "other"
-runServer.group "other"
+shadowJar.finalizedBy("reobfShadowJar")
+
+fancyGradle {
+    patches {
+        resources
+        coremods
+        asm
+    }
+}
