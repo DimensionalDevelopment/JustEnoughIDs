@@ -1,8 +1,8 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url "http://files.minecraftforge.net/maven" }
-        maven { url "http://repo.spongepowered.org/maven" }
+        maven { url "https://files.minecraftforge.net/maven" }
+        maven { url "https://repo.spongepowered.org/maven" }
         maven { url "https://plugins.gradle.org/m2/" }
 
     }
@@ -20,17 +20,17 @@ apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "org.spongepowered.mixin"
 
 repositories {
-    maven { url = "http://dvs1.progwml6.com/files/maven" }
+    maven { url = "https://dvs1.progwml6.com/files/maven" }
     maven { url = "https://minecraft.curseforge.com/api/maven" }
-    maven { url "http://maven.tterrag.com" }
+    maven { url "https://maven.tterrag.com" }
     maven { url "https://maven.blamejared.com" }
     maven { url "https://maven.mcmoddev.com/" }
-    maven { url "http://repo.spongepowered.org/maven" }
+    maven { url "https://repo.spongepowered.org/maven" }
     maven { url "https://maven.blamejared.com" }
-    maven { url "http://maven.tterrag.com" }
+    maven { url "https://maven.tterrag.com" }
     maven { url = "https://minecraft.curseforge.com/api/maven" }
 	    maven {
-        url = "http://minecraft.curseforge.com/api/maven/"
+        url = "https://minecraft.curseforge.com/api/maven/"
     }
     maven {
         name = "buildcraft"
@@ -38,10 +38,10 @@ repositories {
     }
     maven {
         name = "thiakil"
-        url = "http://maven.thiakil.com"
+        url = "https://maven.thiakil.com"
     }
     maven {
-        url = "http://dvs1.progwml6.com/files/maven"
+        url = "https://dvs1.progwml6.com/files/maven"
     }	
     maven {
         url = "https://www.cursemaven.com"
@@ -85,7 +85,7 @@ dependencies {
     compileOnly "2572:722:BiomeTweaker-1.12.2-3.2.354@jar"
     compileOnly "com.azanor.baubles:Baubles:1.12-1.5.2"
     compileOnly "vazkii.patchouli:Patchouli:1.0-20.99"
-    compileOnly "curse.maven:bewitchment:3038090"
+    compileOnly "curse.maven:bewitchment-285439:3256343"
 }
 
 def travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
