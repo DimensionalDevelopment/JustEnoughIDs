@@ -144,6 +144,7 @@ dependencies {
     compileOnly fg.deobf( "curse.maven:baubles-227083:2518667" )
     compileOnly fg.deobf( "curse.maven:Patchouli-306770:3162874" )
     compileOnly fg.deobf( "curse.maven:bewitchment-285439:3256343" )
+    compileOnly fg.deobf( "curse.maven:CubicChunk-292243:3186888")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -181,12 +182,16 @@ publishing {
 
 mixin {
     add sourceSets.main, "mixins.jeid.refmap.json"
+    disableAnnotationProcessorCheck()
 }
 
 shadowJar {
     classifier ""
     exclude "LICENSE.txt", "dummyThing"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier "sources"
@@ -198,8 +203,6 @@ artifacts {
     archives shadowJar
     archives sourcesJar
 }
-
-shadowJar.finalizedBy("reobfShadowJar")
 
 fancyGradle {
     patches {
