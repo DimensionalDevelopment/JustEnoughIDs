@@ -2,10 +2,9 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 buildscript {
     repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url 'https://maven.minecraftforge.net' }
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url "https://repo.spongepowered.org/repository/maven-public" }
-        jcenter()
         mavenCentral()
     }
     dependencies {
@@ -47,7 +46,7 @@ minecraft {
         client {
 
             jvmArg "-Dfml.coreMods.load=org.dimdev.jeid.JEIDLoadingPlugin"
-                    jvmArg "-Dmixin.hotSwap=true"
+            jvmArg "-Dmixin.hotSwap=true"
             jvmArg "-Dmixin.checks.interfaces=true"
 
             workingDirectory project.file('run')
@@ -62,7 +61,7 @@ minecraft {
         server {
 
             jvmArg "-Dfml.coreMods.load=org.dimdev.jeid.JEIDLoadingPlugin"
-                    jvmArg "-Dmixin.hotSwap=true"
+            jvmArg "-Dmixin.hotSwap=true"
             jvmArg "-Dmixin.checks.interfaces=true"
 
             // Recommended logging data for a userdev environment
@@ -81,27 +80,14 @@ configurations {
 }
 
 repositories {
-    maven { url = "https://dvs1.progwml6.com/files/maven" }
-    maven { url = "https://minecraft.curseforge.com/api/maven" }
-    maven { url "https://maven.tterrag.com" }
-    maven { url "https://maven.blamejared.com" }
-    maven { url "https://maven.mcmoddev.com/" }
     maven { url "https://repo.spongepowered.org/maven" }
-    maven {
-        name = "buildcraft"
-        url = "https://mod-buildcraft.com/maven"
-    }
-    maven {
-        name = "thiakil"
-        url = "https://maven.thiakil.com"
-    }
-    maven {
-        url = "https://dvs1.progwml6.com/files/maven"
-    }
     maven {
         url "https://cursemaven.com"
         content {
             includeGroup "curse.maven"
+        }
+        metadataSources {
+            artifact()
         }
     }
 }
