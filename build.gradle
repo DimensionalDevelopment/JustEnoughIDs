@@ -156,6 +156,14 @@ java {
     withSourcesJar()
 }
 
+processResources {
+    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
+    from (sourceSets.main.resources.srcDirs) {
+        include("mcmod.info")
+        expand("version": version)
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
