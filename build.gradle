@@ -1,22 +1,16 @@
-import wtf.gofancy.fancygradle.patch.Patch
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 buildscript {
     repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url 'https://maven.minecraftforge.net' }
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url "https://repo.spongepowered.org/repository/maven-public" }
-        jcenter()
         mavenCentral()
-        maven {
-            name 'FancyGradle'
-            url 'https://gitlab.com/api/v4/projects/26758973/packages/maven'
-        }
     }
     dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
-        classpath 'net.minecraftforge.gradle:ForgeGradle:5.0.+'
+        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.1"
+        classpath 'net.minecraftforge.gradle:ForgeGradle:5.1.+'
         classpath "org.spongepowered:mixingradle:0.7-SNAPSHOT"
-        classpath group: 'wtf.gofancy.fancygradle', name: 'wtf.gofancy.fancygradle.gradle.plugin', version: '1.1.+'
     }
 }
 
@@ -24,7 +18,6 @@ apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-apply plugin: 'wtf.gofancy.fancygradle'
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: 'org.spongepowered.mixin'
 
@@ -53,7 +46,7 @@ minecraft {
         client {
 
             jvmArg "-Dfml.coreMods.load=org.dimdev.jeid.JEIDLoadingPlugin"
-                    jvmArg "-Dmixin.hotSwap=true"
+            jvmArg "-Dmixin.hotSwap=true"
             jvmArg "-Dmixin.checks.interfaces=true"
 
             workingDirectory project.file('run')
@@ -68,7 +61,7 @@ minecraft {
         server {
 
             jvmArg "-Dfml.coreMods.load=org.dimdev.jeid.JEIDLoadingPlugin"
-                    jvmArg "-Dmixin.hotSwap=true"
+            jvmArg "-Dmixin.hotSwap=true"
             jvmArg "-Dmixin.checks.interfaces=true"
 
             // Recommended logging data for a userdev environment
@@ -80,28 +73,21 @@ minecraft {
     }
 }
 
+configurations {
+    compileJar {
+        implementation.extendsFrom(compileJar)
+    }
+}
+
 repositories {
-    maven { url = "https://dvs1.progwml6.com/files/maven" }
-    maven { url = "https://minecraft.curseforge.com/api/maven" }
-    maven { url "https://maven.tterrag.com" }
-    maven { url "https://maven.blamejared.com" }
-    maven { url "https://maven.mcmoddev.com/" }
     maven { url "https://repo.spongepowered.org/maven" }
-    maven {
-        name = "buildcraft"
-        url = "https://mod-buildcraft.com/maven"
-    }
-    maven {
-        name = "thiakil"
-        url = "https://maven.thiakil.com"
-    }
-    maven {
-        url = "https://dvs1.progwml6.com/files/maven"
-    }
     maven {
         url "https://cursemaven.com"
         content {
             includeGroup "curse.maven"
+        }
+        metadataSources {
+            artifact()
         }
     }
 }
@@ -112,7 +98,8 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 
-    implementation("org.spongepowered:mixin:0.8.5") {
+    annotationProcessor("org.spongepowered:mixin:0.8.3:processor")
+    compileJar("org.spongepowered:mixin:0.8.3") {
         exclude module: "asm-commons"
         exclude module: "asm-tree"
         exclude module: "launchwrapper"
@@ -165,6 +152,18 @@ jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 //publish.dependsOn('reobfJar')
 
+java {
+    withSourcesJar()
+}
+
+processResources {
+    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
+    from (sourceSets.main.resources.srcDirs) {
+        include("mcmod.info")
+        expand("version": version)
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -185,28 +184,33 @@ mixin {
 }
 
 shadowJar {
-    classifier ""
-    exclude "LICENSE.txt", "dummyThing"
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveClassifier.set(null)
+    configurations = [project.configurations.compileJar]
 }
 
+task thinShadowJar(type: ShadowJar) {
+    archiveClassifier.set("thin")
+    configurations = [project.configurations.compileJar]
+    relocators = shadowJar.relocators
 
+    dependencies {
+        exclude(dependency("org.spongepowered:mixin"))
+    }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier "sources"
-    from sourceSets.main.allSource
+    manifest {
+        inheritFrom jar.manifest
+    }
+
+    from sourceSets.main.output
 }
 
 artifacts {
-    archives jar
     archives shadowJar
     archives sourcesJar
+    archives thinShadowJar
 }
 
-fancyGradle {
-    patches {
-        resources
-        coremods
-        asm
-    }
+reobf {
+    shadowJar {}
+    thinShadowJar {}
 }
