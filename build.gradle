@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 buildscript {
     repositories {
@@ -73,6 +74,12 @@ minecraft {
     }
 }
 
+configurations {
+    compileJar {
+        implementation.extendsFrom(compileJar)
+    }
+}
+
 repositories {
     maven { url = "https://dvs1.progwml6.com/files/maven" }
     maven { url = "https://minecraft.curseforge.com/api/maven" }
@@ -105,7 +112,8 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 
-    implementation("org.spongepowered:mixin:0.8.3") {
+    annotationProcessor("org.spongepowered:mixin:0.8.3:processor")
+    compileJar("org.spongepowered:mixin:0.8.3") {
         exclude module: "asm-commons"
         exclude module: "asm-tree"
         exclude module: "launchwrapper"
@@ -158,6 +166,10 @@ jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 //publish.dependsOn('reobfJar')
 
+java {
+    withSourcesJar()
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -178,22 +190,33 @@ mixin {
 }
 
 shadowJar {
-    classifier ""
-    exclude "LICENSE.txt", "dummyThing"
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveClassifier.set(null)
+    configurations = [project.configurations.compileJar]
 }
 
+task thinShadowJar(type: ShadowJar) {
+    archiveClassifier.set("thin")
+    configurations = [project.configurations.compileJar]
+    relocators = shadowJar.relocators
 
+    dependencies {
+        exclude(dependency("org.spongepowered:mixin"))
+    }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier "sources"
-    from sourceSets.main.allSource
+    manifest {
+        inheritFrom jar.manifest
+    }
+
+    from sourceSets.main.output
 }
 
 artifacts {
-    archives jar
     archives shadowJar
     archives sourcesJar
+    archives thinShadowJar
 }
 
+reobf {
+    shadowJar {}
+    thinShadowJar {}
 }
